@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JT Education Bureau — Verified tutors across Delhi NCR</title>
+<meta name="description" content="JT Education Bureau matches students with verified, background-checked tutors across Delhi NCR — school subjects, boards and competitive exams, home or online.">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header-mount"></div>
+
+<main>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow" style="color:#C1932F">JT Education Bureau &middot; Delhi NCR</span>
+        <h1>Every tutor on our registry is checked before a class is booked.</h1>
+        <p class="lede">Tell us the subject, board or exam, and the class — our coordinators shortlist verified tutors from across Delhi NCR, usually within a day. Home visits or online, your choice.</p>
+        <div class="hero-ctas">
+          <a href="find-a-tutor.html" class="btn btn-brass">Request a tutor</a>
+          <a href="become-a-tutor.html" class="btn btn-outline">Apply to teach with us</a>
+        </div>
+      </div>
+      <div>
+        <div class="registry-card">
+          <div class="registry-card-head">
+            <div>
+              <span class="form-no">FORM NO. JT-014 &middot; SAMPLE</span>
+              <h4>Tutor match slip</h4>
+            </div>
+          </div>
+          <div class="registry-field"><span>Subject</span><span>Mathematics</span></div>
+          <div class="registry-field"><span>Class / board</span><span>10 &middot; CBSE</span></div>
+          <div class="registry-field"><span>Locality</span><span>Lajpat Nagar</span></div>
+          <div class="registry-field"><span>Mode</span><span>Home visit</span></div>
+          <span class="registry-status"><span class="dot"></span> 3 verified tutors shortlisted</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust-strip">
+    <div class="container trust-row">
+      <div class="trust-item"><strong>Delhi&nbsp;NCR</strong>&nbsp;registry</div>
+      <div class="trust-item">Tutors <strong>reviewed</strong> before listing</div>
+      <div class="trust-item"><strong>Home</strong>&nbsp;&amp;&nbsp;<strong>online</strong> classes</div>
+      <div class="trust-item">A real coordinator, <strong>not an algorithm</strong></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">How JT works</span>
+        <h2>Three steps, start to first class</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <span class="step-no">01</span>
+          <h3>Tell us what you need</h3>
+          <p>Subject, class or exam, board, preferred locality and schedule — a two-minute form, no account required.</p>
+        </div>
+        <div class="step">
+          <span class="step-no">02</span>
+          <h3>We shortlist verified tutors</h3>
+          <p>A coordinator checks credentials and experience and calls you with two or three matches, usually within 24 hours.</p>
+        </div>
+        <div class="step">
+          <span class="step-no">03</span>
+          <h3>Choose and begin</h3>
+          <p>Pick a tutor, confirm the schedule, and start — at home or online, on your terms.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">On the registry</span>
+        <h2>Subjects we cover most</h2>
+        <p class="lede">From primary school to Class 12 boards, plus foundation and competitive-exam coaching.</p>
+      </div>
+      <div class="card-grid" id="subjectsPreview"></div>
+      <p style="margin-top:22px;"><a href="subjects.html" class="btn btn-outline">View all subjects</a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">On record</span>
+        <h2>Statements from the registry</h2>
+      </div>
+      <div class="statement-grid" id="testimonialsMount"></div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Before you ask</span>
+        <h2>Frequently asked</h2>
+      </div>
+      <div id="faqMount"></div>
+      <p style="margin-top:22px;"><a href="faqs.html" class="btn btn-outline">All questions</a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-banner">
+        <div>
+          <h2>Ready to start?</h2>
+          <p>Request a tutor or apply to teach — both take under two minutes.</p>
+        </div>
+        <div class="hero-ctas" style="margin:0;">
+          <a href="find-a-tutor.html" class="btn btn-brass">Request a tutor</a>
+          <a href="become-a-tutor.html" class="btn btn-outline">Apply to teach</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer-mount"></div>
+
+<script src="js/jt-data.js"></script>
+<script src="js/site.js"></script>
+<script>
+  jtRenderHeader("index.html");
+  jtRenderFooter();
+  jtInitFaq();
+
+  const FALLBACK_SUBJECTS = [
+    { Name: "Mathematics", Description: "Classes 1–12, all major boards.", Tag: "Core" },
+    { Name: "Science", Description: "Physics, Chemistry, Biology combined.", Tag: "Core" },
+    { Name: "English", Description: "Grammar, writing and literature.", Tag: "Core" },
+    { Name: "Social Science", Description: "History, Civics, Geography, Economics.", Tag: "Core" },
+    { Name: "Physics", Description: "Classes 9–12, board and foundation.", Tag: "Senior" },
+    { Name: "Chemistry", Description: "Classes 9–12, board and foundation.", Tag: "Senior" },
+    { Name: "Computer Science", Description: "Coding fundamentals to board exams.", Tag: "Senior" },
+    { Name: "Hindi", Description: "Grammar, comprehension and writing.", Tag: "Core" }
+  ];
+  const FALLBACK_TESTIMONIALS = [];
+  const FALLBACK_FAQS = [
+    { Question: "How fast will I hear back?", Answer: "Most requests get a call from a coordinator within 24 hours with two or three shortlisted tutors to choose from." },
+    { Question: "Are tutors actually verified?", Answer: "Yes — every tutor is reviewed for identification, qualifications and teaching experience before being listed on the registry." },
+    { Question: "What are the fees?", Answer: "Fees vary by subject, class and mode. A coordinator will walk you through pricing on your first call, with nothing charged just to browse." }
+  ];
+
+  (async () => {
+    const subjects = await jtFetchTab("subjects", FALLBACK_SUBJECTS);
+    jtMountCards(
+      document.getElementById("subjectsPreview"),
+      subjects.slice(0, 8),
+      { name: "Name", description: "Description", tag: "Tag" },
+      () => "subjects.html"
+    );
+
+    const testimonials = await jtFetchTab("testimonials", FALLBACK_TESTIMONIALS);
+    const tMount = document.getElementById("testimonialsMount");
+    if (!testimonials.length) {
+      tMount.innerHTML = `<p style="color:var(--ink-soft)">Statements from students, parents and tutors will appear here once added to the Testimonials sheet.</p>`;
+    } else {
+      tMount.innerHTML = testimonials.slice(0, 3).map(t => `
+        <div class="statement">
+          <div class="stars">${"★".repeat(Number(t.Rating || t.rating || 5))}</div>
+          <p class="quote">"${t.Quote || t.quote || ""}"</p>
+          <div class="sign"><div><strong>${t.Name || t.name || ""}</strong><span>${t.Role || t.role || ""}</span></div></div>
+        </div>`).join("");
+    }
+
+    const faqs = await jtFetchTab("faqs", FALLBACK_FAQS);
+    document.getElementById("faqMount").innerHTML = faqs.slice(0, 4).map((f, i) => `
+      <div class="faq-item ${i === 0 ? "open" : ""}">
+        <button class="faq-q"><span>${f.Question || f.question}</span><span class="plus">+</span></button>
+        <div class="faq-a"><p>${f.Answer || f.answer}</p></div>
+      </div>`).join("");
+    jtInitFaq();
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — JT Education Bureau</title>
+<meta name="description" content="Get in touch with JT Education Bureau — East of Kailash, New Delhi.">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header-mount"></div>
+
+<main>
+  <section class="section" style="padding-bottom:20px;">
+    <div class="container">
+      <span class="eyebrow">Get in touch</span>
+      <h1 style="font-size:clamp(1.9rem,3.4vw,2.6rem);">Contact the registry office</h1>
+      <p class="lede">For tutor requests or applications, use the dedicated forms — they route straight to a coordinator. For anything else, reach us here.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container" style="display:grid; grid-template-columns:1fr 1fr; gap:40px;">
+
+      <div class="form-panel">
+        <span class="form-no">FORM NO. JT-C &middot; GENERAL ENQUIRY</span>
+        <h3 style="margin-top:6px;">Send a message</h3>
+        <hr class="ledger-rule" style="margin:18px 0 24px;">
+        <form id="contactForm" novalidate>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;">
+          <div class="field">
+            <label for="cName">Name <span class="req">*</span></label>
+            <input type="text" id="cName" name="Name" required>
+            <span class="field-error">Enter your name</span>
+          </div>
+          <div class="field">
+            <label for="cContact">Phone or email <span class="req">*</span></label>
+            <input type="text" id="cContact" name="Contact" required>
+            <span class="field-error">Enter a phone number or email</span>
+          </div>
+          <div class="field">
+            <label for="cMessage">Message <span class="req">*</span></label>
+            <textarea id="cMessage" name="Message" rows="4" required></textarea>
+            <span class="field-error">Enter a message</span>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Send message</button>
+        </form>
+        <div class="form-success" id="formSuccess">
+          <svg class="stamp-icon" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="none" stroke="#3B6D11" stroke-width="2"/><path d="M20 33l8 8 16-18" fill="none" stroke="#3B6D11" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3>Message sent</h3>
+          <p style="color:var(--ink-soft)">We'll get back to you shortly.</p>
+        </div>
+      </div>
+
+      <div>
+        <h3>Registry office</h3>
+        <p style="color:var(--ink-soft);">
+          145, Sant Nagar, East of Kailash<br>
+          New Delhi 110065, India
+        </p>
+        <p><a href="https://www.google.com/maps/search/?api=1&query=145+Sant+Nagar+East+of+Kailash+New+Delhi+110065" class="btn btn-outline" target="_blank" rel="noopener">Get directions</a></p>
+
+        <hr class="ledger-rule" style="margin:26px 0;">
+
+        <h3>Direct lines</h3>
+        <p style="color:var(--ink-soft);">
+          <a href="tel:+918076064782">+91 80760 64782</a><br>
+          <a href="mailto:classesjt@gmail.com">classesjt@gmail.com</a>
+        </p>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<div id="site-footer-mount"></div>
+
+<script src="js/jt-data.js"></script>
+<script src="js/site.js"></script>
+<script>
+  jtRenderHeader("contact.html");
+  jtRenderFooter();
+  jtSetupForm(document.getElementById("contactForm"), "contact");
+</script>
+</body>
+</html>

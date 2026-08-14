@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apply to teach — JT Education Bureau</title>
+<meta name="description" content="Apply to join the JT Education Bureau tutor registry across Delhi NCR. Tell us your subjects, experience and availability.">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header-mount"></div>
+
+<main>
+  <section class="section" style="padding-bottom:0;">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Registration &middot; Become a tutor</span>
+        <h1 style="font-size:clamp(1.9rem,3.4vw,2.6rem);">Join the tutor registry</h1>
+        <p class="lede">Tell us your subjects, experience and availability. Our team reviews every application and reaches out to shortlist you for matching student requests in your area.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:26px;">
+    <div class="container" style="max-width:760px;">
+
+      <div class="form-panel">
+        <span class="form-no">FORM NO. JT-T &middot; TUTOR APPLICATION</span>
+        <h3 style="margin-top:6px;">Tutor details</h3>
+        <hr class="ledger-rule" style="margin:18px 0 24px;">
+
+        <form id="tutorApplicationForm" novalidate>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;">
+
+          <div class="field-row">
+            <div class="field">
+              <label for="fullName">Full name <span class="req">*</span></label>
+              <input type="text" id="fullName" name="Full Name" required>
+              <span class="field-error">Enter your name</span>
+            </div>
+            <div class="field">
+              <label for="tPhone">Phone / WhatsApp <span class="req">*</span></label>
+              <input type="tel" id="tPhone" name="Phone" required placeholder="10-digit mobile number">
+              <span class="field-error">Enter a phone number</span>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="tEmail">Email <span class="req">*</span></label>
+              <input type="email" id="tEmail" name="Email" required>
+              <span class="field-error">Enter your email</span>
+            </div>
+            <div class="field">
+              <label for="experience">Years of teaching experience <span class="req">*</span></label>
+              <select id="experience" name="Experience" required>
+                <option value="">Select</option>
+                <option>Fresher / less than 1 year</option>
+                <option>1–3 years</option>
+                <option>3–7 years</option>
+                <option>7+ years</option>
+              </select>
+              <span class="field-error">Select your experience</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="qualification">Highest qualification <span class="req">*</span></label>
+            <input type="text" id="qualification" name="Qualification" required placeholder="e.g. B.Sc Mathematics, B.Ed">
+            <span class="field-error">Enter your qualification</span>
+          </div>
+
+          <div class="field">
+            <label for="tSubjects">Subjects and classes you teach <span class="req">*</span></label>
+            <input type="text" id="tSubjects" name="Subjects" required placeholder="e.g. Physics & Chemistry, Classes 9–12">
+            <span class="field-error">Tell us what you teach</span>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="tLocality">Areas you can cover <span class="req">*</span></label>
+              <input type="text" id="tLocality" name="Locality" required placeholder="e.g. South Delhi, or 'online only'">
+              <span class="field-error">Enter your coverage area</span>
+            </div>
+            <div class="field">
+              <label for="tMode">Preferred mode <span class="req">*</span></label>
+              <select id="tMode" name="Mode" required>
+                <option value="">Select mode</option>
+                <option>Home visit</option><option>Online</option><option>Either</option>
+              </select>
+              <span class="field-error">Select a mode</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="tNotes">A little about you</label>
+            <textarea id="tNotes" name="Notes" rows="3" placeholder="Teaching style, notable results, boards you're most comfortable with, etc."></textarea>
+          </div>
+
+          <div class="checkbox-row" style="margin-bottom:22px;">
+            <input type="checkbox" id="tConsent" name="Consent" required>
+            <label for="tConsent">I agree to be contacted by JT Education Bureau about this application and confirm the details above are accurate. <span class="req">*</span></label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Submit application</button>
+          <p class="form-note">Shortlisted applicants are contacted for a short verification call before being added to the live registry.</p>
+        </form>
+
+        <div class="form-success" id="formSuccess">
+          <svg class="stamp-icon" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="none" stroke="#3B6D11" stroke-width="2"/><path d="M20 33l8 8 16-18" fill="none" stroke="#3B6D11" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3>Application received</h3>
+          <p style="color:var(--ink-soft)">Our team reviews applications regularly and will call shortlisted tutors for a quick verification chat.</p>
+          <a href="index.html" class="btn btn-outline">Back to home</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<div id="site-footer-mount"></div>
+
+<script src="js/jt-data.js"></script>
+<script src="js/site.js"></script>
+<script>
+  jtRenderHeader("become-a-tutor.html");
+  jtRenderFooter();
+  jtSetupForm(document.getElementById("tutorApplicationForm"), "tutor_application");
+</script>
+</body>
+</html>

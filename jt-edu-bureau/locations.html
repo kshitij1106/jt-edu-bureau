@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Locations — JT Education Bureau</title>
+<meta name="description" content="Areas across Delhi NCR where JT Education Bureau tutors offer home-visit and online classes.">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header-mount"></div>
+
+<main>
+  <section class="section" style="padding-bottom:20px;">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">On the registry</span>
+        <h1 style="font-size:clamp(1.9rem,3.4vw,2.6rem);">Where we operate</h1>
+        <p class="lede">Home-visit tutors are matched by locality; online classes are available everywhere. Based in East of Kailash, active across Delhi NCR.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="card-grid" id="listMount"></div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="cta-banner">
+        <div>
+          <h2>Don't see what you need?</h2>
+          <p>Tell us directly — our coordinators cover more than what's listed here.</p>
+        </div>
+        <a href="find-a-tutor.html" class="btn btn-brass">Request a tutor</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer-mount"></div>
+
+<script src="js/jt-data.js"></script>
+<script src="js/site.js"></script>
+<script>
+  jtRenderHeader("locations.html");
+  jtRenderFooter();
+
+  const FALLBACK = [{"Name": "South Delhi", "Description": "East of Kailash, Lajpat Nagar, Greater Kailash, Saket and nearby.", "Tag": "Home visits"}, {"Name": "Central Delhi", "Description": "Karol Bagh, Connaught Place and nearby.", "Tag": "Home visits"}, {"Name": "East Delhi", "Description": "Preet Vihar, Mayur Vihar and nearby.", "Tag": "Home visits"}, {"Name": "West Delhi", "Description": "Rajouri Garden, Janakpuri and nearby.", "Tag": "Home visits"}, {"Name": "Gurugram", "Description": "Select sectors \u2014 ask your coordinator.", "Tag": "Home visits"}, {"Name": "Noida", "Description": "Select sectors \u2014 ask your coordinator.", "Tag": "Home visits"}, {"Name": "Online, anywhere", "Description": "Live online classes, no locality restriction.", "Tag": "Online"}];
+
+  (async () => {
+    const rows = await jtFetchTab("locations", FALLBACK);
+    jtMountCards(document.getElementById("listMount"), rows, { name: "Name", description: "Description", tag: "Tag" }, () => "find-a-tutor.html");
+  })();
+</script>
+</body>
+</html>

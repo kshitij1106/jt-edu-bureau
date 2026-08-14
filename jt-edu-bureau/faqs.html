@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frequently asked questions — JT Education Bureau</title>
+<meta name="description" content="Answers to common questions about requesting a tutor or applying to teach with JT Education Bureau in Delhi NCR.">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header-mount"></div>
+
+<main>
+  <section class="section" style="padding-bottom:20px;">
+    <div class="container" style="max-width:760px;">
+      <span class="eyebrow">Before you ask</span>
+      <h1 style="font-size:clamp(1.9rem,3.4vw,2.6rem);">Frequently asked questions</h1>
+      <p class="lede">Can't find your answer here? Call or WhatsApp <a href="tel:+918076064782">+91 80760 64782</a>.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container" style="max-width:760px;">
+      <div id="faqMount"></div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer-mount"></div>
+
+<script src="js/jt-data.js"></script>
+<script src="js/site.js"></script>
+<script>
+  jtRenderHeader("faqs.html");
+  jtRenderFooter();
+
+  const FALLBACK_FAQS = [
+    { Question: "How fast will I hear back?", Answer: "Most requests get a call from a coordinator within 24 hours with two or three shortlisted tutors to choose from." },
+    { Question: "Are tutors actually verified?", Answer: "Yes — every tutor is reviewed for identification, qualifications and teaching experience before being listed on the registry." },
+    { Question: "What are the fees?", Answer: "Fees vary by subject, class and mode. A coordinator will walk you through pricing on your first call, with nothing charged just to browse or submit a request." },
+    { Question: "Do you offer online classes?", Answer: "Yes. When you submit a request, choose 'Online' or 'Either' as your preferred mode." },
+    { Question: "Which areas do you cover for home visits?", Answer: "We're based in East of Kailash and actively cover most of Delhi NCR for home-visit tutoring — see the Locations page, or just ask when you submit a request." },
+    { Question: "How do I apply to teach?", Answer: "Use the 'Become a tutor' form with your subjects, qualifications and experience. Our team calls shortlisted applicants for a short verification chat before adding them to the registry." },
+    { Question: "Can I switch tutors if it's not a good fit?", Answer: "Yes — let your coordinator know and they'll arrange another shortlist at no extra charge to browse." },
+    { Question: "Is my contact information shared with tutors right away?", Answer: "No. Your details stay with your coordinator until you approve a specific match." }
+  ];
+
+  (async () => {
+    const faqs = await jtFetchTab("faqs", FALLBACK_FAQS);
+    document.getElementById("faqMount").innerHTML = faqs.map((f, i) => `
+      <div class="faq-item ${i === 0 ? "open" : ""}">
+        <button class="faq-q"><span>${f.Question || f.question}</span><span class="plus">+</span></button>
+        <div class="faq-a"><p>${f.Answer || f.answer}</p></div>
+      </div>`).join("");
+    jtInitFaq();
+  })();
+</script>
+</body>
+</html>

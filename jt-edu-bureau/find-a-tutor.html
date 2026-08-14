@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request a tutor — JT Education Bureau</title>
+<meta name="description" content="Tell JT Education Bureau what you need — subject, class, board and locality — and get matched with verified tutors across Delhi NCR.">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header-mount"></div>
+
+<main>
+  <section class="section" style="padding-bottom:0;">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Registration &middot; Find a tutor</span>
+        <h1 style="font-size:clamp(1.9rem,3.4vw,2.6rem);">Tell us what you need</h1>
+        <p class="lede">A coordinator reviews every request personally and calls you with shortlisted, verified tutors — usually within 24 hours. No fee to submit this form.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:26px;">
+    <div class="container" style="max-width:760px;">
+
+      <div class="form-panel">
+        <span class="form-no">FORM NO. JT-R &middot; TUTOR REQUEST</span>
+        <h3 style="margin-top:6px;">Student / parent details</h3>
+        <hr class="ledger-rule" style="margin:18px 0 24px;">
+
+        <form id="tutorRequestForm" novalidate>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;">
+
+          <div class="field-row">
+            <div class="field">
+              <label for="parentName">Your name <span class="req">*</span></label>
+              <input type="text" id="parentName" name="Parent/Student Name" required>
+              <span class="field-error">Enter your name</span>
+            </div>
+            <div class="field">
+              <label for="studentClass">Student's class <span class="req">*</span></label>
+              <select id="studentClass" name="Class" required>
+                <option value="">Select class</option>
+                <option>Nursery–5</option>
+                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+                <option>11</option><option>12</option>
+                <option>Competitive exam aspirant</option>
+                <option>College / other</option>
+              </select>
+              <span class="field-error">Select a class</span>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="phone">Phone / WhatsApp <span class="req">*</span></label>
+              <input type="tel" id="phone" name="Phone" required placeholder="10-digit mobile number">
+              <span class="field-error">Enter a phone number</span>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="Email" placeholder="optional">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="board">Board</label>
+              <select id="board" name="Board">
+                <option value="">Select board</option>
+                <option>CBSE</option><option>ICSE</option><option>IB</option>
+                <option>State board</option><option>Not applicable</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="mode">Preferred mode <span class="req">*</span></label>
+              <select id="mode" name="Mode" required>
+                <option value="">Select mode</option>
+                <option>Home visit</option><option>Online</option><option>Either</option>
+              </select>
+              <span class="field-error">Select a mode</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="subjects">Subject(s) needed <span class="req">*</span></label>
+            <input type="text" id="subjects" name="Subjects" required placeholder="e.g. Mathematics, Physics">
+            <span class="field-error">Tell us which subject(s)</span>
+          </div>
+
+          <div class="field">
+            <label for="locality">Locality / area (or "online only") <span class="req">*</span></label>
+            <input type="text" id="locality" name="Locality" required placeholder="e.g. Lajpat Nagar, New Delhi">
+            <span class="field-error">Enter a locality</span>
+          </div>
+
+          <div class="field">
+            <label for="notes">Anything else the coordinator should know</label>
+            <textarea id="notes" name="Notes" rows="3" placeholder="Preferred timing, tutor gender preference, exam goals, etc."></textarea>
+          </div>
+
+          <div class="checkbox-row" style="margin-bottom:22px;">
+            <input type="checkbox" id="consent" name="Consent" required>
+            <label for="consent">I agree to be contacted by JT Education Bureau by phone, WhatsApp or email about this request. <span class="req">*</span></label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Submit request</button>
+          <p class="form-note">By submitting, your details are added to our tutor-matching registry. We never share your contact information with a tutor until you approve a match.</p>
+        </form>
+
+        <div class="form-success" id="formSuccess">
+          <svg class="stamp-icon" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="none" stroke="#3B6D11" stroke-width="2"/><path d="M20 33l8 8 16-18" fill="none" stroke="#3B6D11" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3>Request received</h3>
+          <p style="color:var(--ink-soft)">A coordinator will call or WhatsApp you within 24 hours with shortlisted tutors. Keep an eye on <strong>+91&nbsp;80760&nbsp;64782</strong>.</p>
+          <a href="index.html" class="btn btn-outline">Back to home</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<div id="site-footer-mount"></div>
+
+<script src="js/jt-data.js"></script>
+<script src="js/site.js"></script>
+<script>
+  jtRenderHeader("find-a-tutor.html");
+  jtRenderFooter();
+  jtSetupForm(document.getElementById("tutorRequestForm"), "tutor_request");
+</script>
+</body>
+</html>
