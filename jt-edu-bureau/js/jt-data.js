@@ -16,11 +16,11 @@
 const JT_CONFIG = {
   // ID of the PUBLIC content Sheet (shared "Anyone with the link – Viewer").
   // From its URL, the long string between /d/ and /edit.
-  SHEET_ID: "PASTE_YOUR_PUBLIC_SHEET_ID_HERE",
+  SHEET_ID: "1-3sQn5hvWjCx975cXGVXZ1G6gVIAq6usqzLO_xQ9kD4",
 
   // The /exec URL from deploying Code.gs as a Web App INSIDE THE
   // PRIVATE leads Sheet (that sheet itself stays un-shared).
-  APPS_SCRIPT_URL: "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx_2T6iZHUY9rLwXKMve6_ZChBl94Tu7oD2x12jX8rQ6JPi2Fx5OQ3ufIRP28KEhDtV/exec",
 
   // Tab names — keep these exact names in your Sheet, or edit to match
   TABS: {
@@ -37,7 +37,8 @@ const JT_CONFIG = {
 /* ---------- CSV fetch + parse (public sheet, no API key) ---------- */
 
 function jtSheetUrl(tabName) {
-  return `https://docs.google.com/spreadsheets/d/${JT_CONFIG.SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+  // cache-bust so browsers/proxies never serve a stale copy of your Sheet
+  return `https://docs.google.com/spreadsheets/d/${JT_CONFIG.SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}&_=${Date.now()}`;
 }
 
 function jtParseCsv(text) {

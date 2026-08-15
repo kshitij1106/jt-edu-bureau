@@ -32,6 +32,12 @@ auth-email quotas) that would bite at real usage.
   application, contact) write straight into a private Google Sheet
   via a free Apps Script endpoint.
 - **SEO basics:** `sitemap.xml`, `robots.txt`.
+- **Rigid cells:** `apps-script/AddContentValidation.gs` turns Active/
+  Mode/Locality cells into dropdowns, backed by an editable "Options"
+  tab — see the "Rigid cells" section in `apps-script/README.md`.
+- **Self-serve debugging:** `/diagnostics.html` on the live site checks
+  your Sheet connection tab-by-tab and explains what's wrong in plain
+  language — check here first if content "isn't showing up."
 
 ## What's intentionally not built
 

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnostics — JT Education Bureau</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  .diag-row { display:flex; align-items:flex-start; gap:12px; padding:14px 0; border-bottom:1px solid var(--ledger-soft); }
+  .diag-icon { flex-shrink:0; width:22px; height:22px; margin-top:1px; }
+  .diag-body strong { display:block; font-size:0.92rem; color:var(--ink); margin-bottom:3px; }
+  .diag-body p { margin:0; font-size:0.84rem; color:var(--ink-soft); }
+  .diag-body pre { background:var(--paper); border:1px solid var(--ledger); border-radius:3px; padding:8px 10px; font-size:0.74rem; margin:8px 0 0; overflow-x:auto; white-space:pre-wrap; word-break:break-all; }
+  .ok { color: var(--success); } .warn { color: var(--stamp); }
+</style>
+</head>
+<body>
+
+<div id="site-header-mount"></div>
+
+<main>
+  <section class="section">
+    <div class="container" style="max-width:760px;">
+      <span class="eyebrow">Not for visitors</span>
+      <h1 style="font-size:clamp(1.7rem,3vw,2.2rem);">Sheet connection diagnostics</h1>
+      <p class="lede">Checks whether this site can actually read your public content Sheet, tab by tab. Nothing here is linked from the rest of the site — bookmark this page for yourself.</p>
+
+      <div class="form-panel" style="margin-top:26px;">
+        <div id="configStatus"></div>
+      </div>
+
+      <div class="form-panel" style="margin-top:20px;">
+        <h3 style="margin-top:0;">Per-tab check</h3>
+        <div id="tabResults"><p class="portal-loading">Checking…</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer-mount"></div>
+
+<script src="js/jt-data.js"></script>
+<script src="js/site.js"></script>
+<script>
+  jtRenderHeader("");
+  jtRenderFooter();
+
+  function icon(kind) {
+    if (kind === "ok") return `<svg class="diag-icon ok" viewBox="0 0 22 22"><circle cx="11" cy="11" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 11l3 3 6-6.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    return `<svg class="diag-icon warn" viewBox="0 0 22 22"><circle cx="11" cy="11" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11 6.5v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="11" cy="15.3" r="1" fill="currentColor"/></svg>`;
+  }
+
+  function row(kind, title, html) {
+    return `<div class="diag-row">${icon(kind)}<div class="diag-body"><strong>${title}</strong>${html}</div></div>`;
+  }
+
+  // ---- Config status ----
+  const sheetOk = JT_CONFIG.SHEET_ID && !JT_CONFIG.SHEET_ID.startsWith("PASTE_");
+  const scriptOk = JT_CONFIG.APPS_SCRIPT_URL && !JT_CONFIG.APPS_SCRIPT_URL.startsWith("PASTE_");
+  let configHtml = "";
+  configHtml += row(sheetOk ? "ok" : "warn", sheetOk ? "Public Sheet ID is set" : "Public Sheet ID is NOT set",
+    sheetOk ? `<pre>${JT_CONFIG.SHEET_ID}</pre>` : `<p>Open <code>js/jt-data.js</code>, paste your Sheet's ID into <code>SHEET_ID</code>, commit and push. Content will keep showing placeholder text until this is set.</p>`);
+  configHtml += row(scriptOk ? "ok" : "warn", scriptOk ? "Apps Script (leads) URL is set" : "Apps Script (leads) URL is NOT set",
+    scriptOk ? `<pre>${JT_CONFIG.APPS_SCRIPT_URL}</pre>` : `<p>Forms will silently fail to submit until <code>APPS_SCRIPT_URL</code> is set in <code>js/jt-data.js</code>.</p>`);
+  document.getElementById("configStatus").innerHTML = configHtml;
+
+  // ---- Per-tab raw check (bypasses the fallback logic so failures are visible) ----
+  async function checkTab(key, tabName) {
+    if (!sheetOk) {
+      return row("warn", tabName, `<p>Skipped — set the Sheet ID above first.</p>`);
+    }
+    try {
+      const res = await fetch(jtSheetUrl(tabName));
+      const text = await res.text();
+      const looksLikeCsv = /^["A-Za-z0-9]/.test(text.trim()) && !text.trim().startsWith("<");
+      if (!res.ok || !looksLikeCsv) {
+        return row("warn", tabName, `
+          <p>This didn't come back as spreadsheet data — usually means either the tab name doesn't match exactly (case-sensitive, no extra spaces), or the Sheet isn't shared as "Anyone with the link – Viewer" yet.</p>
+          <pre>${text.slice(0, 200).replace(/</g, "&lt;")}</pre>`);
+      }
+      const rows = jtParseCsv(text);
+      const activeCount = rows.filter(r => (r.Active || "y").toLowerCase().startsWith("y") || !("Active" in r)).length;
+      if (!rows.length) {
+        return row("warn", tabName, `<p>Connected, but the tab is empty — no rows found besides the header.</p>`);
+      }
+      return row("ok", tabName, `<p>${rows.length} row${rows.length === 1 ? "" : "s"} found, ${activeCount} marked Active (or no Active column). Looking good.</p>`);
+    } catch (err) {
+      return row("warn", tabName, `<p>Request failed: ${String(err)}</p>`);
+    }
+  }
+
+  (async () => {
+    const results = await Promise.all(Object.entries(JT_CONFIG.TABS).map(([key, name]) => checkTab(key, name)));
+    document.getElementById("tabResults").innerHTML = results.join("");
+  })();
+</script>
+</body>
+</html>

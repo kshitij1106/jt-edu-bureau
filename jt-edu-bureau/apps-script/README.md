@@ -66,6 +66,50 @@ whole internet can technically reach). Both are still 100% free.
 Editing any cell in this sheet updates the live site the next time
 that page loads — no code, no redeploy, no waiting.
 
+## Rigid cells — dropdowns instead of free typing
+
+Run this once your content tabs exist (from either method above):
+
+1. In the same public Sheet: **Extensions → Apps Script**.
+2. Add a new file (the **+** next to Files) and paste in the contents
+   of `AddContentValidation.gs` from this folder.
+3. Pick `addContentValidation` from the function dropdown → **Run**.
+
+This does two things:
+
+- Turns every `Active` cell, `Tutors!Mode`, and `Tutors!Locality` into
+  a **dropdown** — you click and pick, you can't mistype `"yes "` or
+  `"Home Visit"` in a way the site won't recognize.
+- Creates an **Options** tab with the allowed regions and a reference
+  spelling list for subjects. **To add a new region, just add a row to
+  the Options tab** — every Locality dropdown updates immediately, no
+  script, no redeploy. Subjects stay free-typed (a tutor can teach
+  several, comma-separated) but the Options tab gives you consistent
+  spelling to copy from.
+
+Safe to re-run any time — it won't duplicate the Options tab or wipe
+existing dropdown choices.
+
+## If content "isn't showing up"
+
+Open **`/diagnostics.html`** on your live site (e.g.
+`jtedubureau.com/diagnostics.html`) — it checks your Sheet ID, and
+tries reading every tab, telling you in plain language what's wrong.
+The most common causes, in order of likelihood:
+
+1. **`SHEET_ID` was never actually pasted into `js/jt-data.js`**, or
+   the change was made locally but never committed and pushed to
+   GitHub — the *live* site is still running the old file.
+2. **The Sheet isn't shared publicly.** Share → General access →
+   Anyone with the link → Viewer. If this is off, the site receives a
+   Google sign-in page instead of your data and silently shows
+   placeholder content.
+3. **A tab name doesn't match exactly** — `Tutors ` (trailing space)
+   or `tutors` (wrong case) won't be found. Tab names are
+   case-sensitive.
+4. **Nothing in that tab is marked `Active = Yes`** — rows without it
+   are hidden on purpose (so you can draft content before publishing).
+
 ## Sheet 2 — Private leads (form submissions land here)
 
 1. Create a **second**, separate Google Sheet. Name it

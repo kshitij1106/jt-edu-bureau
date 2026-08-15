@@ -134,10 +134,11 @@
     const region = document.getElementById("fRegion").value;
     const mode = document.getElementById("fMode").value;
 
+    const norm = s => (s || "").trim().toLowerCase();
     const filtered = ALL_TUTORS.filter(t => {
-      if (subject && !(t.Subjects || "").toLowerCase().includes(subject.toLowerCase())) return false;
-      if (region && t.Locality !== region) return false;
-      if (mode && t.Mode !== mode && t.Mode !== "Either") return false;
+      if (subject && !norm(t.Subjects).includes(norm(subject))) return false;
+      if (region && norm(t.Locality) !== norm(region)) return false;
+      if (mode && norm(t.Mode) !== norm(mode) && norm(t.Mode) !== "either") return false;
       return true;
     });
 
