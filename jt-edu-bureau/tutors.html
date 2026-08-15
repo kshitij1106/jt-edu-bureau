@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Browse tutors — JT Education Bureau</title>
+<meta name="description" content="Browse verified tutors on the JT Education Bureau registry, filterable by subject and Delhi NCR region.">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header-mount"></div>
+
+<main>
+  <section class="section" style="padding-bottom:0;">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">On the registry</span>
+        <h1 style="font-size:clamp(1.9rem,3.4vw,2.6rem);">Browse verified tutors</h1>
+        <p class="lede">Every tutor here has been personally reviewed by a JT coordinator. Filter by subject or region, then request one directly — or submit a request and let a coordinator shortlist for you.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:26px;">
+    <div class="container">
+
+      <div class="tutor-filters">
+        <div class="field">
+          <label for="fSubject">Subject</label>
+          <select id="fSubject"><option value="">All subjects</option></select>
+        </div>
+        <div class="field">
+          <label for="fRegion">Region</label>
+          <select id="fRegion"><option value="">All regions</option></select>
+        </div>
+        <div class="field">
+          <label for="fMode">Mode</label>
+          <select id="fMode">
+            <option value="">Any mode</option>
+            <option value="Home visit">Home visit</option>
+            <option value="Online">Online</option>
+            <option value="Either">Either</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="tutor-count" id="tutorCount"></p>
+
+      <div id="tutorEmpty" style="display:none;">
+        <p style="color:var(--ink-soft);">Tutor profiles will appear here as they're added to the registry. In the meantime, tell us what you need and a coordinator will match you directly.</p>
+        <p><a href="find-a-tutor.html" class="btn btn-primary">Request a tutor</a></p>
+      </div>
+
+      <div class="carousel-wrap" id="carouselWrap">
+        <button class="carousel-arrow prev" id="carouselPrev" aria-label="Scroll left">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="carousel-track" id="carouselTrack"></div>
+        <button class="carousel-arrow next" id="carouselNext" aria-label="Scroll right">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="cta-banner">
+        <div>
+          <h2>Not sure who fits best?</h2>
+          <p>Submit your requirements and a coordinator will shortlist for you personally.</p>
+        </div>
+        <a href="find-a-tutor.html" class="btn btn-brass">Request a tutor</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer-mount"></div>
+
+<script src="js/jt-data.js"></script>
+<script src="js/site.js"></script>
+<script>
+  jtRenderHeader("tutors.html");
+  jtRenderFooter();
+
+  let ALL_TUTORS = [];
+
+  function initials(name) {
+    return (name || "?").trim().split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+  }
+
+  function tutorCard(t) {
+    const subjects = (t.Subjects || "").split(",").map(s => s.trim()).filter(Boolean);
+    const card = document.createElement("div");
+    card.className = "tutor-card";
+    card.innerHTML = `
+      <div class="tutor-card-top">
+        <div class="tutor-avatar">${t.Photo ? `<img src="${t.Photo}" alt="">` : initials(t.Name)}</div>
+        <div>
+          <h4>${t.Name || "Tutor"}</h4>
+          <div class="tutor-locality">${t.Locality || ""}</div>
+        </div>
+      </div>
+      <div class="tutor-tags">${subjects.map(s => `<span class="tutor-tag">${s}</span>`).join("")}</div>
+      <div class="tutor-meta"><strong>${t.Experience || "—"}</strong> experience &middot; ${t.Qualification || ""}</div>
+      <div class="tutor-meta">${t.Classes ? `Classes ${t.Classes}` : ""}${t.Boards ? ` &middot; ${t.Boards}` : ""}</div>
+      <p class="tutor-bio">${t.Bio || ""}</p>
+      <span class="verified-badge" style="margin-bottom:12px;">
+        <svg width="12" height="12" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5 8l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        JT verified
+      </span>
+      <a class="btn btn-outline" href="find-a-tutor.html?subject=${encodeURIComponent(subjects[0] || "")}&tutor=${encodeURIComponent(t.Name || "")}">Request this tutor</a>
+    `;
+    return card;
+  }
+
+  function populateFilter(selectEl, values) {
+    [...new Set(values.filter(Boolean))].sort().forEach(v => {
+      const opt = document.createElement("option");
+      opt.value = v; opt.textContent = v;
+      selectEl.appendChild(opt);
+    });
+  }
+
+  function renderTutors() {
+    const subject = document.getElementById("fSubject").value;
+    const region = document.getElementById("fRegion").value;
+    const mode = document.getElementById("fMode").value;
+
+    const filtered = ALL_TUTORS.filter(t => {
+      if (subject && !(t.Subjects || "").toLowerCase().includes(subject.toLowerCase())) return false;
+      if (region && t.Locality !== region) return false;
+      if (mode && t.Mode !== mode && t.Mode !== "Either") return false;
+      return true;
+    });
+
+    const track = document.getElementById("carouselTrack");
+    track.innerHTML = "";
+    filtered.forEach(t => track.appendChild(tutorCard(t)));
+
+    document.getElementById("tutorCount").textContent =
+      ALL_TUTORS.length ? `${filtered.length} tutor${filtered.length === 1 ? "" : "s"} shown` : "";
+    document.getElementById("carouselWrap").style.display = ALL_TUTORS.length ? "" : "none";
+    document.getElementById("tutorEmpty").style.display = ALL_TUTORS.length ? "none" : "block";
+  }
+
+  document.getElementById("carouselPrev").addEventListener("click", () => {
+    document.getElementById("carouselTrack").scrollBy({ left: -300, behavior: "smooth" });
+  });
+  document.getElementById("carouselNext").addEventListener("click", () => {
+    document.getElementById("carouselTrack").scrollBy({ left: 300, behavior: "smooth" });
+  });
+  ["fSubject", "fRegion", "fMode"].forEach(id => document.getElementById(id).addEventListener("change", renderTutors));
+
+  (async () => {
+    ALL_TUTORS = await jtFetchTab("tutors", []);
+    const allSubjects = ALL_TUTORS.flatMap(t => (t.Subjects || "").split(",").map(s => s.trim()));
+    populateFilter(document.getElementById("fSubject"), allSubjects);
+    populateFilter(document.getElementById("fRegion"), ALL_TUTORS.map(t => t.Locality));
+    renderTutors();
+  })();
+</script>
+</body>
+</html>

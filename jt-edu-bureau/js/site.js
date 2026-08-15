@@ -25,9 +25,8 @@ const JT_LOGO_SVG = `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/sv
 
 const JT_NAV_LINKS = [
   { href: "find-a-tutor.html", label: "Find a tutor" },
+  { href: "tutors.html", label: "Browse tutors" },
   { href: "become-a-tutor.html", label: "Become a tutor" },
-  { href: "subjects.html", label: "Subjects" },
-  { href: "locations.html", label: "Locations" },
   { href: "how-it-works.html", label: "How JT works" },
   { href: "about.html", label: "About" }
 ];

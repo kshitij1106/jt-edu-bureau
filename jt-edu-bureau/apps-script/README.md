@@ -15,7 +15,7 @@ whole internet can technically reach). Both are still 100% free.
 3. In the toolbar, pick the function `setupPublicContentSheet` from
    the dropdown and click **Run**. Approve the permissions it asks
    for (it's your own script on your own sheet).
-4. Switch back to the Sheet — six tabs now exist with headers and
+4. Switch back to the Sheet — seven tabs now exist with headers and
    real starter rows already filled in. Edit, delete, or add to them
    as you like. Delete the leftover blank "Sheet1" tab if you want.
 5. Skip to steps 4–6 below (share the sheet, then copy its ID).
@@ -34,7 +34,20 @@ whole internet can technically reach). Both are still 100% free.
    | `Exams` | `Name`, `Description`, `Tag`, `Active` |
    | `Locations` | `Name`, `Description`, `Tag`, `Active` |
    | `Testimonials` | `Name`, `Role`, `Quote`, `Rating`, `Active` |
+   | `Tutors` | `Name`, `Photo`, `Subjects`, `Classes`, `Boards`, `Exams`, `Experience`, `Qualification`, `Locality`, `Mode`, `Bio`, `Rating`, `Active` |
    | `FAQs` | `Question`, `Answer`, `Active` |
+
+   For `Tutors`: `Subjects` is comma-separated (e.g. `Mathematics,
+   Physics`), `Photo` is an optional public image URL (leave blank for
+   a plain initials avatar), `Locality` should match a name from your
+   `Locations` tab so the region filter lines up, and `Mode` should be
+   exactly `Home visit`, `Online`, or `Either`.
+
+   **Only ever put here what's safe for anyone on the internet to
+   see** — a name, subjects, qualifications, a short bio, an
+   approximate region. Never a phone number, email, or exact address;
+   those stay in tutors' private applications (Sheet 2 below), and
+   only a coordinator sees them.
 
    Set `Active` to `Yes` on any row you want visible on the site — leave
    it blank or set `No` to hide a row without deleting it (handy for
@@ -81,8 +94,8 @@ don't need to pre-build these tabs yourself.
 ## A note on scale
 
 Both the public read and the private write are well within Google's
-free quotas at 200–300 students and 50–60 tutors. If the business
-outgrows a spreadsheet as its live "database" — lots of simultaneous
-staff editing it, or you want tutors/students logging into real
-accounts — that's the point where moving to a proper database (see
-the main README's "Phase 2") starts to pay for itself.
+free quotas at 200–300 students and 50–60 tutors. A spreadsheet is a
+perfectly good "database" for content and leads at this size — the
+point where it stops being enough is a much later, much bigger
+problem (payments, real-time multi-user editing at large scale), not
+something to design around now.

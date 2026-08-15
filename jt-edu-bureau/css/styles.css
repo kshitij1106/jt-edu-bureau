@@ -131,13 +131,14 @@ a { color: var(--ink); }
   margin-top: 3px;
 }
 
-.main-nav { display: flex; align-items: center; gap: 2px; }
+.main-nav { display: flex; align-items: center; gap: 0; }
 .main-nav a {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   text-decoration: none;
   color: var(--ink-soft);
-  padding: 8px 12px;
+  padding: 8px 10px;
   border-radius: var(--radius);
+  white-space: nowrap;
   transition: background 0.15s, color 0.15s;
 }
 .main-nav a:hover, .main-nav a.active { background: var(--ledger-soft); color: var(--ink); }
@@ -402,6 +403,70 @@ a { color: var(--ink); }
 .stack { display: flex; flex-direction: column; gap: 16px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
 
+/* ---------- Tutor directory: filters + carousel ---------- */
+.tutor-filters {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  background: var(--paper); border: 1px solid var(--ledger); border-radius: 5px;
+  padding: 16px; margin-bottom: 30px;
+}
+.tutor-filters .field { margin-bottom: 0; flex: 1 1 180px; }
+.tutor-filters label { font-size: 0.76rem; }
+.tutor-count { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 16px; }
+
+.carousel-wrap { position: relative; }
+.carousel-track {
+  display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
+  padding: 4px 4px 16px; scrollbar-width: thin; scrollbar-color: var(--ledger) transparent;
+}
+.carousel-track::-webkit-scrollbar { height: 6px; }
+.carousel-track::-webkit-scrollbar-thumb { background: var(--ledger); border-radius: 3px; }
+
+.carousel-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--paper-white); border: 1px solid var(--ledger); color: var(--ink);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  box-shadow: 0 6px 16px rgba(22,35,63,0.12); z-index: 5;
+}
+.carousel-arrow:hover { background: var(--ink); color: #fff; }
+.carousel-arrow.prev { left: -8px; }
+.carousel-arrow.next { right: -8px; }
+@media (max-width: 640px) { .carousel-arrow { display: none; } }
+
+.tutor-card {
+  scroll-snap-align: start;
+  flex: 0 0 272px;
+  background: var(--paper-white);
+  border: 1px solid var(--ledger);
+  border-radius: 5px;
+  padding: 20px;
+  display: flex; flex-direction: column;
+}
+.tutor-card-top { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
+.tutor-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--ink); color: var(--paper-white);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 1.15rem; flex-shrink: 0; overflow: hidden;
+}
+.tutor-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.tutor-card h4 { margin: 0 0 2px; font-size: 1rem; font-family: var(--font-body); font-weight: 600; color: var(--ink); }
+.tutor-card .tutor-locality { font-size: 0.78rem; color: var(--ink-soft); }
+.tutor-card .tutor-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+.tutor-card .tutor-tag {
+  font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.03em;
+  background: var(--ledger-soft); color: var(--ink-soft); padding: 3px 8px; border-radius: 20px;
+}
+.tutor-card .tutor-meta { font-size: 0.82rem; color: var(--ink-soft); margin-bottom: 6px; }
+.tutor-card .tutor-meta strong { color: var(--ink); font-weight: 500; }
+.tutor-card .tutor-bio { font-size: 0.83rem; color: var(--charcoal); flex-grow: 1; margin-bottom: 14px; }
+.tutor-card .btn { margin-top: auto; }
+.verified-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--success);
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 880px) {
   .hero-grid { grid-template-columns: 1fr; }
@@ -427,4 +492,47 @@ a { color: var(--ink); }
   .trust-item:first-child { border-top: none; }
   .footer-grid { grid-template-columns: 1fr; }
   .cta-banner { flex-direction: column; align-items: flex-start; }
+  .ledger-table { font-size: 0.82rem; }
+  .ledger-table th:nth-child(n+4), .ledger-table td:nth-child(n+4) { display: none; }
 }
+
+/* ---------- Portal: status pills ---------- */
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 20px;
+}
+.pill-pending { background: #F4E9CE; color: #8A5F17; }
+.pill-verified { background: #E1EEDA; color: var(--success); }
+.pill-rejected { background: #F3DEDA; color: var(--stamp); }
+.pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* ---------- Portal: ledger table (admin dashboard) ---------- */
+.ledger-table { width: 100%; border-collapse: collapse; background: var(--paper-white); }
+.ledger-table th {
+  font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--brass-dark); text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--ledger);
+}
+.ledger-table td { padding: 12px 14px; border-bottom: 1px solid var(--ledger-soft); font-size: 0.88rem; vertical-align: top; }
+.ledger-table tr:last-child td { border-bottom: none; }
+.ledger-table .row-actions { display: flex; gap: 8px; white-space: nowrap; }
+.ledger-table .btn { padding: 7px 12px; font-size: 0.8rem; }
+
+/* ---------- Portal: file upload field ---------- */
+.file-field {
+  border: 1px dashed var(--ledger);
+  border-radius: 4px;
+  padding: 16px;
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+  background: var(--paper);
+}
+.file-field input[type="file"] { display: block; margin: 8px auto 0; font-size: 0.82rem; }
+.file-field.has-file { border-color: var(--success); background: #EAF3DE; color: var(--success); }
+
+/* ---------- Portal: narrow panel wrapper ---------- */
+.portal-shell { min-height: 70vh; display: flex; align-items: flex-start; justify-content: center; padding: 64px 24px; }
+.portal-narrow { width: 100%; max-width: 460px; }
+.portal-wide { width: 100%; max-width: 1040px; }
+.portal-loading { text-align: center; padding: 60px 0; color: var(--ink-soft); font-family: var(--font-mono); font-size: 0.85rem; }

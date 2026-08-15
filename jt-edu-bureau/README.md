@@ -1,33 +1,48 @@
-# JT Education Bureau — website (Phase 1)
+# JT Education Bureau — website
 
 A free, no-backend public website for JT Education Bureau Private
 Limited: plain HTML/CSS/JS, content pulled live from a Google Sheet,
 lead forms written to a private Google Sheet, hosted free on
 Cloudflare Pages, on your own domain. No paid services anywhere in
-this stack.
+this stack — deliberately so, including staying off tools like
+Supabase whose free tiers have real limits (e.g. very low outgoing
+auth-email quotas) that would bite at real usage.
+
+**Status:** live at jtedubureau.com. Sheets confirmed working.
 
 ## What's built so far
 
-- **Pages:** Home, Find a tutor, Become a tutor, Subjects, Boards,
-  Exams, Locations, How JT works, About, FAQs, Contact.
+- **Pages:** Home, Find a tutor, Browse tutors, Become a tutor,
+  Subjects, Boards, Exams, Locations, How JT works, About, FAQs,
+  Contact, plus a 404 page.
 - **Design system:** a custom "registry/bureau" look (ledger lines,
   admit-card styling, the circular seal mark) — all in
   `css/styles.css`, one file, easy to retheme.
 - **Logo:** `assets/logo-mark.svg` — the JT-as-π seal. Vector, so it
   scales to any size with no quality loss.
-- **Content layer:** subjects, boards, exams, locations, testimonials
-  and FAQs are all read live from a Google Sheet you control —
+- **Content layer:** subjects, boards, exams, locations, testimonials,
+  tutors and FAQs are all read live from a Google Sheet you control —
   edit a cell, the site updates. Nothing is hardcoded.
+- **Tutor directory:** `tutors.html` — a filterable (subject, region,
+  mode), swipeable carousel of verified tutors, sourced from the same
+  public Sheet. Only ever shows what's safe to be public (see the
+  "Tutors" tab note in `apps-script/README.md`) — phone numbers and
+  documents never leave the private leads sheet.
 - **Lead capture:** all three forms (tutor request, tutor
   application, contact) write straight into a private Google Sheet
   via a free Apps Script endpoint.
+- **SEO basics:** `sitemap.xml`, `robots.txt`.
 
-## What's not built yet (Phase 2/3, see below)
+## What's intentionally not built
 
-Student/tutor login accounts, automated matching, masked contact
-details, tutor document verification, payments and commission
-tracking. These need a real backend and real security, not a
-spreadsheet — see "What's next" at the bottom.
+Login accounts, in-app messaging, automated matching, and payments/
+commission tracking. Discovery (browsing tutors) doesn't need any of
+that — it's just published content. The things that genuinely do need
+real accounts and security (a tutor's private documents, a masked
+phone number) still go through your coordinator by hand for now,
+same as the rest of the lead flow. If the business reaches a point
+where that manual step is the bottleneck, that's a real backend
+project (Supabase or similar) worth revisiting — not before.
 
 ## 1. Set up your two Google Sheets
 
@@ -88,7 +103,7 @@ costs nothing.
 ## Editing things yourself ("artistic control")
 
 - **Text content (subjects, boards, exams, locations, testimonials,
-  FAQs):** edit the public Google Sheet. Live on next page load.
+  tutors, FAQs):** edit the public Google Sheet. Live on next page load.
 - **Colors, fonts, spacing:** all in `css/styles.css`, at the top
   under `:root` — change a hex value, the whole site updates.
 - **Copy on the homepage / form pages / about page:** edit the text
@@ -105,19 +120,15 @@ None of this needs a rebuild, a deploy step, or touching Cloudflare —
 push a change to GitHub and Cloudflare redeploys automatically within
 about a minute.
 
-## What's next (Phase 2 and 3)
+## What's next
 
-When you're ready to move beyond manual matching:
+The natural next additions that still fit the free, spreadsheet-based
+stack: reviews/ratings feeding into the Tutors tab, a simple ticket
+tab for support requests, an admin export view. All of these are
+"add a tab, add a page" work, not "add a backend" work.
 
-- **Phase 2 — accounts, verification, matching:** needs a real
-  database with actual per-user security (a spreadsheet can't safely
-  mask a tutor's phone number from a student, or store an ID
-  document privately). Supabase's free tier comfortably covers your
-  current scale and is a natural next step.
-- **Phase 3 — payments & commission tracking:** added once Phase 2's
-  accounts exist, through a sandboxed Indian payment gateway before
-  handling real transactions.
-
-Bring either of these back to a chat with Claude when you're ready —
-the current site and this README give a working, complete starting
-point either way.
+Payments and commission tracking are the one piece that will
+eventually need something more than a spreadsheet (real transaction
+records, a payment gateway). That's worth its own conversation when
+the business is actually ready to take payments through the site
+rather than directly.

@@ -134,6 +134,11 @@
   jtRenderHeader("find-a-tutor.html");
   jtRenderFooter();
   jtSetupForm(document.getElementById("tutorRequestForm"), "tutor_request");
+
+  // Prefill from a "Request this tutor" link on the Browse Tutors page
+  const params = new URLSearchParams(location.search);
+  if (params.get("subject")) document.getElementById("subjects").value = params.get("subject");
+  if (params.get("tutor")) document.getElementById("notes").value = `Interested in: ${params.get("tutor")}`;
 </script>
 </body>
 </html>
