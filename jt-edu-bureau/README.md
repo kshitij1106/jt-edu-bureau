@@ -1,59 +1,73 @@
 # JT Education Bureau — website
 
-A free, no-backend public website for JT Education Bureau Private
-Limited: plain HTML/CSS/JS, content pulled live from a Google Sheet,
-lead forms written to a private Google Sheet, hosted free on
-Cloudflare Pages, on your own domain. No paid services anywhere in
-this stack — deliberately so, including staying off tools like
-Supabase whose free tiers have real limits (e.g. very low outgoing
-auth-email quotas) that would bite at real usage.
+A free website for JT Education Bureau Private Limited: plain
+HTML/CSS/JS, marketing content pulled live from a Google Sheet, real
+phone+password accounts for students and tutors backed by a second,
+private Google Sheet, hosted free on Cloudflare Pages, on your own
+domain. No paid services anywhere in this stack — deliberately so,
+including staying off tools like Supabase whose free tiers have real
+limits (e.g. very low outgoing auth-email quotas) that would bite at
+real usage.
 
-**Status:** live at jtedubureau.com. Sheets confirmed working.
+**Status:** live at jtedubureau.com.
 
 ## What's built so far
 
-- **Pages:** Home, Find a tutor, Browse tutors, Become a tutor,
-  Subjects, Boards, Exams, Locations, How JT works, About, FAQs,
-  Contact, plus a 404 page.
+- **Pages:** Home, Browse tutors, How JT works, About, Subjects,
+  Boards, Exams, Locations, FAQs, Contact, plus student and tutor
+  login/register pages and dashboards, plus a 404 page.
 - **Design system:** a custom "registry/bureau" look (ledger lines,
   admit-card styling, the circular seal mark) — all in
   `css/styles.css`, one file, easy to retheme.
 - **Logo:** `assets/logo-mark.svg` — the JT-as-π seal. Vector, so it
   scales to any size with no quality loss.
-- **Content layer:** subjects, boards, exams, locations, testimonials,
-  tutors and FAQs are all read live from a Google Sheet you control —
+- **Content layer:** subjects, boards, exams, locations, testimonials
+  and FAQs are all read live from a public Google Sheet you control —
   edit a cell, the site updates. Nothing is hardcoded.
-- **Tutor directory:** `tutors.html` — a filterable (subject, region,
-  mode), swipeable carousel of verified tutors, sourced from the same
-  public Sheet. Only ever shows what's safe to be public (see the
-  "Tutors" tab note in `apps-script/README.md`) — phone numbers and
-  documents never leave the private leads sheet.
-- **Lead capture:** all three forms (tutor request, tutor
-  application, contact) write straight into a private Google Sheet
-  via a free Apps Script endpoint.
+- **Real accounts, phone + password:** students/parents and tutors
+  each get their own login (`find-a-tutor.html` and
+  `become-a-tutor.html`). Passwords are salted and hashed thousands of
+  times before storage, never stored in plain text — see the security
+  note in `apps-script/README.md`.
+- **Student dashboard** (`student-dashboard.html`): submit as many
+  tutor requests as needed without retyping contact details each
+  time, and see the status of every past request.
+- **Tutor dashboard** (`tutor-dashboard.html`): tutors manage their
+  own listing — rate per hour, description, subjects, classes,
+  boards, location, mode, and a photo (1MB limit, stored in Drive) —
+  updated instantly, no coordinator needed for routine edits. New
+  accounts start unverified and invisible on the public directory
+  until a coordinator approves them by hand in the Sheet.
+- **Public tutor directory** (`tutors.html`): a filterable (subject,
+  region, mode), swipeable carousel — sourced live from verified
+  tutor accounts via a locked-down API endpoint that only ever
+  returns public-safe fields (never phone, email, or credentials).
+- **Live registry count:** the homepage hero shows real, current
+  numbers (verified tutors, requests received, subjects covered) —
+  never fabricated placeholders, and honestly blank until connected.
+- **General contact form** (`contact.html`) still writes straight to
+  the private sheet for one-off enquiries that don't need an account.
 - **SEO basics:** `sitemap.xml`, `robots.txt`.
-- **Rigid cells:** `apps-script/AddContentValidation.gs` turns Active/
-  Mode/Locality cells into dropdowns, backed by an editable "Options"
-  tab — see the "Rigid cells" section in `apps-script/README.md`.
+- **Rigid cells:** `apps-script/AddContentValidation.gs` turns every
+  `Active` cell in the public Sheet into a dropdown.
 - **Self-serve debugging:** `/diagnostics.html` on the live site checks
-  your Sheet connection tab-by-tab and explains what's wrong in plain
-  language — check here first if content "isn't showing up."
+  your public Sheet connection tab-by-tab and explains what's wrong in
+  plain language.
 
 ## What's intentionally not built
 
-Login accounts, in-app messaging, automated matching, and payments/
-commission tracking. Discovery (browsing tutors) doesn't need any of
-that — it's just published content. The things that genuinely do need
-real accounts and security (a tutor's private documents, a masked
-phone number) still go through your coordinator by hand for now,
-same as the rest of the lead flow. If the business reaches a point
-where that manual step is the bottleneck, that's a real backend
-project (Supabase or similar) worth revisiting — not before.
+Admin dashboards for matching students to tutors (still done by a
+coordinator reading the Requests and Tutor Accounts tabs directly),
+in-app messaging, and payments/commission tracking. Payments in
+particular are the one piece that will eventually need something more
+than a spreadsheet — worth its own conversation when the business is
+ready to take payments through the site rather than directly.
 
 ## 1. Set up your two Google Sheets
 
 Follow `/apps-script/README.md` step by step, then come back here.
-You'll end up with two IDs/URLs to paste into `js/jt-data.js`.
+You'll end up with a Sheet ID and a Web App URL to paste into
+`js/jt-data.js`.
 
 ## 2. Put the code on GitHub
 
@@ -61,7 +75,7 @@ You'll end up with two IDs/URLs to paste into `js/jt-data.js`.
 cd jt-edu-bureau
 git init
 git add .
-git commit -m "JT Education Bureau — Phase 1 site"
+git commit -m "JT Education Bureau site"
 ```
 
 Then on github.com: **New repository** → name it e.g. `jt-edu-bureau`
@@ -109,12 +123,15 @@ costs nothing.
 ## Editing things yourself ("artistic control")
 
 - **Text content (subjects, boards, exams, locations, testimonials,
-  tutors, FAQs):** edit the public Google Sheet. Live on next page load.
+  FAQs):** edit the public Google Sheet. Live on next page load.
+- **A tutor's rate, description, photo, location:** the tutor edits
+  these themselves at `/tutor-dashboard.html` — you don't touch a
+  sheet for routine updates, only to flip `Verified` to `Yes` once.
 - **Colors, fonts, spacing:** all in `css/styles.css`, at the top
   under `:root` — change a hex value, the whole site updates.
-- **Copy on the homepage / form pages / about page:** edit the text
-  directly inside the relevant `.html` file — it's plain readable
-  HTML, no build step to run.
+- **Copy on the homepage / about page / etc.:** edit the text
+  directly inside the relevant `.html` file — plain readable HTML,
+  no build step to run.
 - **Logo:** `assets/logo-mark.svg` — editable in any vector tool
   (even free ones like Inkscape or Figma) if you ever want to adjust
   it.
@@ -128,13 +145,13 @@ about a minute.
 
 ## What's next
 
-The natural next additions that still fit the free, spreadsheet-based
-stack: reviews/ratings feeding into the Tutors tab, a simple ticket
-tab for support requests, an admin export view. All of these are
-"add a tab, add a page" work, not "add a backend" work.
+Natural next steps: a lightweight admin view of the Requests tab
+(currently just read directly in the Sheet), tutors seeing which
+requests they've been matched to from their own dashboard, and
+ratings/reviews feeding into the public directory. All still fit the
+free stack already in place.
 
 Payments and commission tracking are the one piece that will
 eventually need something more than a spreadsheet (real transaction
-records, a payment gateway). That's worth its own conversation when
-the business is actually ready to take payments through the site
-rather than directly.
+records, a payment gateway) — worth its own conversation when the
+business is ready for it.

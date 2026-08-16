@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My tutor profile — JT Education Bureau</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header-mount"></div>
+
+<main id="app" style="display:none;">
+  <section class="section" style="padding-bottom:10px;">
+    <div class="container">
+      <div class="dash-header">
+        <div>
+          <h1 style="font-size:clamp(1.7rem,3vw,2.2rem);">Welcome, <span id="welcomeName">—</span></h1>
+          <p class="dash-sub" id="statusLine"></p>
+        </div>
+        <button class="btn btn-outline" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:16px;">
+    <div class="container" style="max-width:640px;">
+      <div class="form-panel">
+        <span class="form-no">TUTOR PROFILE</span>
+        <h3 style="margin-top:6px;">Your listing</h3>
+        <p style="color:var(--ink-soft); font-size:0.85rem; margin-bottom:18px;">This is what appears on the public tutor directory once a coordinator verifies your account. Update it any time — changes are saved immediately.</p>
+        <hr class="ledger-rule" style="margin-bottom:22px;">
+
+        <div class="photo-upload">
+          <div class="photo-preview" id="photoPreview">?</div>
+          <div>
+            <div class="file-field" style="text-align:left; padding:10px 14px;">
+              <input type="file" id="photoInput" accept="image/*">
+              <span style="font-size:0.76rem;">JPG or PNG, up to 1MB.</span>
+            </div>
+            <p id="photoStatus" style="font-size:0.78rem; color:var(--ink-soft); margin:6px 0 0;"></p>
+          </div>
+        </div>
+
+        <form id="profileForm" novalidate>
+          <div class="field-row">
+            <div class="field">
+              <label for="pName">Name</label>
+              <input type="text" id="pName">
+            </div>
+            <div class="field">
+              <label for="pEmail">Email</label>
+              <input type="email" id="pEmail">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="pSubjects">Subjects you teach</label>
+            <input type="text" id="pSubjects" placeholder="e.g. Mathematics, Physics">
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="pClasses">Classes</label>
+              <input type="text" id="pClasses" placeholder="e.g. 9-12">
+            </div>
+            <div class="field">
+              <label for="pBoards">Boards</label>
+              <input type="text" id="pBoards" placeholder="e.g. CBSE, ICSE">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="pExams">Exams (if any)</label>
+              <input type="text" id="pExams" placeholder="e.g. JEE, NEET">
+            </div>
+            <div class="field">
+              <label for="pExperience">Experience</label>
+              <input type="text" id="pExperience" placeholder="e.g. 5 years">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="pQualification">Qualification</label>
+            <input type="text" id="pQualification" placeholder="e.g. M.Sc Mathematics, B.Ed">
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="pRate">Rate per hour (₹)</label>
+              <input type="text" id="pRate" placeholder="e.g. 600">
+            </div>
+            <div class="field">
+              <label for="pMode">Mode</label>
+              <select id="pMode">
+                <option value="">Select mode</option>
+                <option>Home visit</option><option>Online</option><option>Either</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="pLocality">Locality / region</label>
+            <input type="text" id="pLocality" placeholder="e.g. South Delhi">
+          </div>
+
+          <div class="field">
+            <label for="pDescription">Short description</label>
+            <textarea id="pDescription" rows="3" placeholder="Your teaching style, notable results, what makes your classes work."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Save profile</button>
+          <span id="profileSaved" style="font-size:0.82rem; color:var(--success); display:block; text-align:center; margin-top:10px;"></span>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="loadingScreen" class="portal-shell"><p class="portal-loading">Loading your account…</p></div>
+
+<div id="site-footer-mount"></div>
+
+<script src="js/jt-data.js"></script>
+<script src="js/site.js"></script>
+<script>
+  jtRenderHeader("");
+  jtRenderFooter();
+
+  let SESSION;
+
+  function fillForm(profile) {
+    document.getElementById("welcomeName").textContent = profile.Name || "there";
+    const verified = String(profile.Verified || "No").toLowerCase() === "yes";
+    document.getElementById("statusLine").innerHTML = verified
+      ? `<span class="pill pill-verified"><span class="dot"></span>Verified — visible on the public directory</span>`
+      : `<span class="pill pill-pending"><span class="dot"></span>Pending review — a coordinator will verify you soon</span>`;
+
+    document.getElementById("pName").value = profile.Name || "";
+    document.getElementById("pEmail").value = profile.Email || "";
+    document.getElementById("pSubjects").value = profile.Subjects || "";
+    document.getElementById("pClasses").value = profile.Classes || "";
+    document.getElementById("pBoards").value = profile.Boards || "";
+    document.getElementById("pExams").value = profile.Exams || "";
+    document.getElementById("pExperience").value = profile.Experience || "";
+    document.getElementById("pQualification").value = profile.Qualification || "";
+    document.getElementById("pRate").value = profile.RatePerHour || "";
+    document.getElementById("pMode").value = profile.Mode || "";
+    document.getElementById("pLocality").value = profile.Locality || "";
+    document.getElementById("pDescription").value = profile.Description || "";
+
+    const preview = document.getElementById("photoPreview");
+    if (profile.Photo) {
+      preview.innerHTML = `<img src="${jtNormalizeImageUrl(profile.Photo)}" alt="">`;
+    } else {
+      preview.textContent = (profile.Name || "?").trim().split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+    }
+  }
+
+  document.getElementById("photoInput").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const statusEl = document.getElementById("photoStatus");
+    if (file.size > 1024 * 1024) {
+      statusEl.textContent = "That file is over 1MB — please choose a smaller image.";
+      statusEl.style.color = "var(--stamp)";
+      e.target.value = "";
+      return;
+    }
+    statusEl.textContent = "Uploading…";
+    statusEl.style.color = "var(--ink-soft)";
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result.split(",")[1];
+      const res = await jtApiCall("uploadPhoto", { token: SESSION.token, photoBase64: base64, mimeType: file.type });
+      if (res.ok) {
+        document.getElementById("photoPreview").innerHTML = `<img src="${jtNormalizeImageUrl(res.url)}" alt="">`;
+        statusEl.textContent = "Photo updated.";
+        statusEl.style.color = "var(--success)";
+      } else {
+        statusEl.textContent = "Upload failed — please try again.";
+        statusEl.style.color = "var(--stamp)";
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById("profileForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector("button");
+    btn.disabled = true; btn.textContent = "Saving…";
+    const res = await jtApiCall("updateProfile", {
+      token: SESSION.token,
+      data: {
+        Name: document.getElementById("pName").value,
+        Email: document.getElementById("pEmail").value,
+        Subjects: document.getElementById("pSubjects").value,
+        Classes: document.getElementById("pClasses").value,
+        Boards: document.getElementById("pBoards").value,
+        Exams: document.getElementById("pExams").value,
+        Experience: document.getElementById("pExperience").value,
+        Qualification: document.getElementById("pQualification").value,
+        RatePerHour: document.getElementById("pRate").value,
+        Mode: document.getElementById("pMode").value,
+        Locality: document.getElementById("pLocality").value,
+        Description: document.getElementById("pDescription").value
+      }
+    });
+    btn.disabled = false; btn.textContent = "Save profile";
+    const saved = document.getElementById("profileSaved");
+    if (res.ok) {
+      document.getElementById("welcomeName").textContent = document.getElementById("pName").value || "there";
+      saved.textContent = "Saved."; saved.style.color = "var(--success)";
+    } else {
+      saved.textContent = "Couldn't save — please try again."; saved.style.color = "var(--stamp)";
+    }
+    setTimeout(() => saved.textContent = "", 2500);
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await jtApiCall("logout", { token: SESSION.token });
+    jtClearSession();
+    location.href = "become-a-tutor.html";
+  });
+
+  (async () => {
+    const auth = await jtRequireAuth("tutor", "become-a-tutor.html");
+    if (!auth) return;
+    SESSION = auth;
+    fillForm(auth.profile);
+    document.getElementById("loadingScreen").style.display = "none";
+    document.getElementById("app").style.display = "";
+  })();
+</script>
+</body>
+</html>

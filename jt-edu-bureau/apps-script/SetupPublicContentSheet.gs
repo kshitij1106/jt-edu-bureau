@@ -70,10 +70,6 @@ function setupPublicContentSheet() {
     ["", "", "", "", "No"]
   ]);
 
-  makeTab(ss, "Tutors", ["Name", "Photo", "Subjects", "Classes", "Boards", "Exams", "Experience", "Qualification", "Locality", "Mode", "Bio", "Rating", "Active"], [
-    ["", "", "", "", "", "", "", "", "", "", "", "", "No"]
-  ]);
-
   makeTab(ss, "FAQs", ["Question", "Answer", "Active"], [
     ["How fast will I hear back?", "Most requests get a call from a coordinator within 24 hours with two or three shortlisted tutors to choose from.", "Yes"],
     ["Are tutors actually verified?", "Yes - every tutor is reviewed for identification, qualifications and teaching experience before being listed on the registry.", "Yes"],
@@ -85,7 +81,7 @@ function setupPublicContentSheet() {
     ["Is my contact information shared with tutors right away?", "No. Your details stay with your coordinator until you approve a specific match.", "Yes"]
   ]);
 
-  SpreadsheetApp.getUi().alert("Done. Seven content tabs are set up with starter rows you can edit anytime — Subjects, Boards, Exams, Locations, Testimonials, Tutors and FAQs.");
+  SpreadsheetApp.getUi().alert("Done. Six content tabs are set up with starter rows you can edit anytime — Subjects, Boards, Exams, Locations, Testimonials and FAQs.");
 }
 
 function makeTab(ss, name, headers, rows) {

@@ -38,6 +38,12 @@ function jtRenderHeader(activePage) {
     `<a href="${l.href}" class="${activePage === l.href ? "active" : ""}">${l.label}</a>`
   ).join("");
 
+  const session = jtGetSession();
+  const quickLink = session && session.role === "student" ? "student-dashboard.html"
+                   : session && session.role === "tutor" ? "tutor-dashboard.html"
+                   : "find-a-tutor.html";
+  const quickLabel = session ? "My account" : "Find a tutor";
+
   mount.innerHTML = `
   <header class="site-header" id="siteHeader">
     <div class="container header-row">
@@ -47,7 +53,7 @@ function jtRenderHeader(activePage) {
       </a>
       <nav class="main-nav" aria-label="Primary">${navHtml}</nav>
       <div class="header-cta">
-        <a href="find-a-tutor.html" class="btn btn-outline">Find a tutor</a>
+        <a href="${quickLink}" class="btn btn-outline">${quickLabel}</a>
         <a href="tel:+918076064782" class="btn btn-primary">Call us</a>
         <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
           <svg width="18" height="18" viewBox="0 0 18 18"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>

@@ -1,50 +1,67 @@
 /**
- * JT EDUCATION BUREAU — form-to-sheet backend.
- *
- * Paste this into Extensions > Apps Script inside your Google Sheet,
- * then deploy as a Web App (see README.md in this folder for the
- * full step-by-step). This is the only "server" the site needs —
- * no hosting, no billing account, nothing paid.
+ * JT EDUCATION BUREAU — backend entry points.
+ * Paste this + Auth.gs into the PRIVATE sheet's Apps Script project.
+ * See README.md in this folder for full setup.
  */
 
-var SHEET_NAMES = {
-  tutor_request: "Leads - Tutor Requests",
-  tutor_application: "Leads - Tutor Applications",
-  contact: "Leads - Contact"
-};
-
-var COLUMNS = {
-  tutor_request: ["Timestamp", "Parent/Student Name", "Class", "Phone", "Email", "Board", "Mode", "Subjects", "Locality", "Notes", "Consent", "Status"],
-  tutor_application: ["Timestamp", "Full Name", "Phone", "Email", "Experience", "Qualification", "Subjects", "Locality", "Mode", "Notes", "Consent", "Status"],
-  contact: ["Timestamp", "Name", "Contact", "Message", "Status"]
-};
+var CONTACT_COLUMNS = ["Timestamp", "Name", "Contact", "Message", "Status"];
 
 function doPost(e) {
   try {
     var body = JSON.parse(e.postData.contents);
-    var type = body.type;
-    var data = body.data || {};
+    var action = body.action || body.type; // supports old "type" callers too
 
-    if (!SHEET_NAMES[type]) {
-      return jsonResponse({ ok: false, reason: "unknown_type" });
+    switch (action) {
+      case "contact": return handleContact(body.data || {});
+      case "register": return handleRegister(body);
+      case "login": return handleLogin(body);
+      case "logout": return handleLogout(body);
+      case "getProfile": return handleGetProfile(body);
+      case "updateProfile": return handleUpdateProfile(body);
+      case "submitRequest": return handleSubmitRequest(body);
+      case "getMyRequests": return handleGetMyRequests(body);
+      case "uploadPhoto": return handleUploadPhoto(body);
+      default: return jsonResponse({ ok: false, reason: "unknown_action" });
     }
-
-    var sheet = getOrCreateSheet(SHEET_NAMES[type], COLUMNS[type]);
-    var row = COLUMNS[type].map(function (col) {
-      if (col === "Timestamp") return new Date();
-      if (col === "Status") return "New";
-      return data[col] || "";
-    });
-    sheet.appendRow(row);
-
-    return jsonResponse({ ok: true });
   } catch (err) {
     return jsonResponse({ ok: false, reason: String(err) });
   }
 }
 
 function doGet(e) {
-  return jsonResponse({ ok: true, message: "JT Education Bureau form endpoint is live." });
+  var p = (e && e.parameter) || {};
+  if (p.stats) return jsonResponse(getStats());
+  if (p.listTutors) return jsonResponse({ ok: true, tutors: getPublicTutors() });
+  return jsonResponse({ ok: true, message: "JT Education Bureau API is live." });
+}
+
+function handleContact(data) {
+  var sheet = getOrCreateSheet("Leads - Contact", CONTACT_COLUMNS);
+  sheet.appendRow([new Date(), data.Name || "", data.Contact || "", data.Message || "", "New"]);
+  return jsonResponse({ ok: true });
+}
+
+/**
+ * Aggregate counts only — never row contents. Safe to expose publicly.
+ */
+function getStats() {
+  var tutorSheet = getAccountSheet("tutor");
+  var studentSheet = getAccountSheet("student");
+  var requestsSheet = getOrCreateSheet("Requests", REQUEST_COLUMNS);
+
+  var tutorData = tutorSheet.getDataRange().getValues();
+  var verifiedIdx = tutorData[0].indexOf("Verified");
+  var verifiedCount = 0;
+  for (var i = 1; i < tutorData.length; i++) {
+    if (String(tutorData[i][verifiedIdx]).toLowerCase() === "yes") verifiedCount++;
+  }
+
+  return {
+    ok: true,
+    verifiedTutors: verifiedCount,
+    registeredStudents: Math.max(studentSheet.getLastRow() - 1, 0),
+    studentRequests: Math.max(requestsSheet.getLastRow() - 1, 0)
+  };
 }
 
 function getOrCreateSheet(name, headers) {

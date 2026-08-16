@@ -98,11 +98,12 @@
 
   function tutorCard(t) {
     const subjects = (t.Subjects || "").split(",").map(s => s.trim()).filter(Boolean);
+    const photoUrl = jtNormalizeImageUrl(t.Photo);
     const card = document.createElement("div");
     card.className = "tutor-card";
     card.innerHTML = `
       <div class="tutor-card-top">
-        <div class="tutor-avatar">${t.Photo ? `<img src="${t.Photo}" alt="">` : initials(t.Name)}</div>
+        <div class="tutor-avatar">${photoUrl ? `<img src="${photoUrl}" alt="">` : initials(t.Name)}</div>
         <div>
           <h4>${t.Name || "Tutor"}</h4>
           <div class="tutor-locality">${t.Locality || ""}</div>
@@ -118,6 +119,12 @@
       </span>
       <a class="btn btn-outline" href="find-a-tutor.html?subject=${encodeURIComponent(subjects[0] || "")}&tutor=${encodeURIComponent(t.Name || "")}">Request this tutor</a>
     `;
+    const img = card.querySelector(".tutor-avatar img");
+    if (img) {
+      img.addEventListener("error", () => {
+        card.querySelector(".tutor-avatar").textContent = initials(t.Name);
+      }, { once: true });
+    }
     return card;
   }
 
@@ -161,7 +168,17 @@
   ["fSubject", "fRegion", "fMode"].forEach(id => document.getElementById(id).addEventListener("change", renderTutors));
 
   (async () => {
-    ALL_TUTORS = await jtFetchTab("tutors", []);
+    if (!JT_CONFIG.APPS_SCRIPT_URL || JT_CONFIG.APPS_SCRIPT_URL.startsWith("PASTE_")) {
+      ALL_TUTORS = [];
+    } else {
+      try {
+        const r = await fetch(`${JT_CONFIG.APPS_SCRIPT_URL}?listTutors=1`);
+        const json = await r.json();
+        ALL_TUTORS = json.ok ? json.tutors : [];
+      } catch (err) {
+        ALL_TUTORS = [];
+      }
+    }
     const allSubjects = ALL_TUTORS.flatMap(t => (t.Subjects || "").split(",").map(s => s.trim()));
     populateFilter(document.getElementById("fSubject"), allSubjects);
     populateFilter(document.getElementById("fRegion"), ALL_TUTORS.map(t => t.Locality));

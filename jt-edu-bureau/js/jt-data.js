@@ -16,11 +16,11 @@
 const JT_CONFIG = {
   // ID of the PUBLIC content Sheet (shared "Anyone with the link – Viewer").
   // From its URL, the long string between /d/ and /edit.
-  SHEET_ID: "1-3sQn5hvWjCx975cXGVXZ1G6gVIAq6usqzLO_xQ9kD4",
+  SHEET_ID: "PASTE_YOUR_PUBLIC_SHEET_ID_HERE",
 
   // The /exec URL from deploying Code.gs as a Web App INSIDE THE
   // PRIVATE leads Sheet (that sheet itself stays un-shared).
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx_2T6iZHUY9rLwXKMve6_ZChBl94Tu7oD2x12jX8rQ6JPi2Fx5OQ3ufIRP28KEhDtV/exec",
+  APPS_SCRIPT_URL: "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE",
 
   // Tab names — keep these exact names in your Sheet, or edit to match
   TABS: {
@@ -29,8 +29,7 @@ const JT_CONFIG = {
     exams: "Exams",
     locations: "Locations",
     testimonials: "Testimonials",
-    faqs: "FAQs",
-    tutors: "Tutors"
+    faqs: "FAQs"
   }
 };
 
@@ -116,6 +115,115 @@ async function jtSubmitForm(type, data) {
     console.error("[JT] Form submit failed", err);
     return { ok: false, reason: "network" };
   }
+}
+
+/* ---------- Image URLs: auto-fix the most common paste mistake ---------- */
+
+/**
+ * Google Drive's own "Share" link (…/file/d/ID/view) doesn't work as
+ * an <img src> — it's a viewer page, not the image itself. This
+ * rewrites that pattern to a URL that actually loads inline, so a
+ * tutor's photo works even if the share link was pasted as-is.
+ */
+function jtNormalizeImageUrl(url) {
+  if (!url) return url;
+  url = url.trim();
+  const m = url.match(/drive\.google\.com\/file\/d\/([^/]+)/) || url.match(/drive\.google\.com\/open\?id=([^&]+)/);
+  if (m) return `https://lh3.googleusercontent.com/d/${m[1]}`;
+  return url;
+}
+
+/* ---------- Live registry counts (aggregate only, no PII) ---------- */
+
+/**
+ * Calls the private Apps Script endpoint for aggregate counts only
+ * (how many rows in each Leads tab) — never the row contents. Returns
+ * null if not configured or unreachable, so callers can hide the
+ * stat rather than show a wrong number.
+ */
+async function jtFetchLeadStats() {
+  if (!JT_CONFIG.APPS_SCRIPT_URL || JT_CONFIG.APPS_SCRIPT_URL.startsWith("PASTE_")) return null;
+  try {
+    const res = await fetch(`${JT_CONFIG.APPS_SCRIPT_URL}?stats=1`);
+    const json = await res.json();
+    return json.ok ? json : null;
+  } catch (err) {
+    console.warn("[JT] Could not load live stats.", err);
+    return null;
+  }
+}
+
+/* ---------- Remember this visitor's own details on this device ---------- */
+/* Not an account — just a same-browser convenience so a returning
+   student or tutor doesn't retype their details. Nothing here is
+   sent anywhere or visible to anyone but them. */
+
+function jtSaveLocalProfile(key, data) {
+  try { localStorage.setItem(key, JSON.stringify(data)); } catch (err) { /* ignore (e.g. private browsing) */ }
+}
+
+function jtLoadLocalProfile(key) {
+  try { return JSON.parse(localStorage.getItem(key) || "null"); } catch (err) { return null; }
+}
+
+function jtPrefillForm(formEl, data) {
+  if (!formEl || !data) return false;
+  let filled = false;
+  Object.entries(data).forEach(([name, value]) => {
+    const field = formEl.querySelector(`[name="${CSS.escape(name)}"]`);
+    if (field && !field.value) { field.value = value; filled = true; }
+  });
+  return filled;
+}
+
+/* ---------- Auth API (talks to Auth.gs on the private sheet) ---------- */
+
+async function jtApiCall(action, extra) {
+  if (!JT_CONFIG.APPS_SCRIPT_URL || JT_CONFIG.APPS_SCRIPT_URL.startsWith("PASTE_")) {
+    return { ok: false, reason: "not_configured" };
+  }
+  try {
+    const res = await fetch(JT_CONFIG.APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(Object.assign({ action }, extra))
+    });
+    return await res.json();
+  } catch (err) {
+    return { ok: false, reason: "network" };
+  }
+}
+
+const JT_SESSION_KEY = "jt_session";
+
+function jtSaveSession(token, role) {
+  localStorage.setItem(JT_SESSION_KEY, JSON.stringify({ token, role }));
+}
+function jtGetSession() {
+  try { return JSON.parse(localStorage.getItem(JT_SESSION_KEY) || "null"); } catch (e) { return null; }
+}
+function jtClearSession() {
+  localStorage.removeItem(JT_SESSION_KEY);
+}
+
+/**
+ * Call at the top of any dashboard page. Redirects to the right
+ * login page if there's no session, or if the session is for the
+ * wrong role (e.g. a tutor token on the student dashboard).
+ */
+async function jtRequireAuth(expectedRole, loginPage) {
+  const session = jtGetSession();
+  if (!session || session.role !== expectedRole) {
+    location.href = loginPage;
+    return null;
+  }
+  const res = await jtApiCall("getProfile", { token: session.token });
+  if (!res.ok) {
+    jtClearSession();
+    location.href = loginPage;
+    return null;
+  }
+  return { token: session.token, profile: res.profile };
 }
 
 /* ---------- Small render helpers shared across pages ---------- */

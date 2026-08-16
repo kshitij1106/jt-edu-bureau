@@ -32,15 +32,17 @@
         <div class="registry-card">
           <div class="registry-card-head">
             <div>
-              <span class="form-no">FORM NO. JT-014 &middot; SAMPLE</span>
-              <h4>Tutor match slip</h4>
+              <span class="form-no">LIVE REGISTRY COUNT</span>
+              <h4>JT Education Bureau, at a glance</h4>
             </div>
           </div>
-          <div class="registry-field"><span>Subject</span><span>Mathematics</span></div>
-          <div class="registry-field"><span>Class / board</span><span>10 &middot; CBSE</span></div>
-          <div class="registry-field"><span>Locality</span><span>Lajpat Nagar</span></div>
-          <div class="registry-field"><span>Mode</span><span>Home visit</span></div>
-          <span class="registry-status"><span class="dot"></span> 3 verified tutors shortlisted</span>
+          <div class="stats-row" id="statsRow">
+            <div class="stat-block"><span class="stat-num" id="statTutors">—</span><span class="stat-label">Verified tutors</span></div>
+            <div class="stat-block"><span class="stat-num" id="statRequests">—</span><span class="stat-label">Requests received</span></div>
+            <div class="stat-block"><span class="stat-num" id="statSubjects">—</span><span class="stat-label">Subjects covered</span></div>
+          </div>
+          <p class="stats-empty" id="statsEmpty" style="display:none;">Live counts will appear here once your Sheets are connected.</p>
+          <span class="registry-status" id="statsStatus"><span class="dot"></span> Updated live from our registry</span>
         </div>
       </div>
     </div>
@@ -158,6 +160,26 @@
   ];
 
   (async () => {
+    const sheetConfigured = JT_CONFIG.SHEET_ID && !JT_CONFIG.SHEET_ID.startsWith("PASTE_");
+    const stats = await jtFetchLeadStats();
+    if (sheetConfigured || stats) {
+      const subjectsForStats = sheetConfigured ? await jtFetchTab("subjects", []) : [];
+      document.getElementById("statTutors").textContent = stats ? stats.verifiedTutors : "—";
+      document.getElementById("statSubjects").textContent = sheetConfigured ? subjectsForStats.length : "—";
+      document.getElementById("statRequests").textContent = stats ? stats.studentRequests : "—";
+      if (!stats) {
+        document.getElementById("statsStatus").className = "registry-status dim";
+        document.getElementById("statsStatus").innerHTML = `<span class="dot"></span> Public Sheet connected, account system not yet set up`;
+      } else if (!sheetConfigured) {
+        document.getElementById("statsStatus").className = "registry-status dim";
+        document.getElementById("statsStatus").innerHTML = `<span class="dot"></span> Account system connected, public Sheet not yet set up`;
+      }
+    } else {
+      document.getElementById("statsRow").style.display = "none";
+      document.getElementById("statsEmpty").style.display = "block";
+      document.getElementById("statsStatus").style.display = "none";
+    }
+
     const subjects = await jtFetchTab("subjects", FALLBACK_SUBJECTS);
     jtMountCards(
       document.getElementById("subjectsPreview"),

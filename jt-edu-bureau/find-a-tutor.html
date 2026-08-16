@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Request a tutor — JT Education Bureau</title>
-<meta name="description" content="Tell JT Education Bureau what you need — subject, class, board and locality — and get matched with verified tutors across Delhi NCR.">
+<title>Student &amp; parent login — JT Education Bureau</title>
+<meta name="description" content="Log in or register to request tutors from JT Education Bureau — no need to retype your details every time.">
 <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,114 +16,55 @@
 <div id="site-header-mount"></div>
 
 <main>
-  <section class="section" style="padding-bottom:0;">
-    <div class="container">
-      <div class="section-head">
-        <span class="eyebrow">Registration &middot; Find a tutor</span>
-        <h1 style="font-size:clamp(1.9rem,3.4vw,2.6rem);">Tell us what you need</h1>
-        <p class="lede">A coordinator reviews every request personally and calls you with shortlisted, verified tutors — usually within 24 hours. No fee to submit this form.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" style="padding-top:26px;">
-    <div class="container" style="max-width:760px;">
-
+  <div class="portal-shell">
+    <div class="portal-narrow">
       <div class="form-panel">
-        <span class="form-no">FORM NO. JT-R &middot; TUTOR REQUEST</span>
-        <h3 style="margin-top:6px;">Student / parent details</h3>
-        <hr class="ledger-rule" style="margin:18px 0 24px;">
+        <span class="form-no">STUDENT &amp; PARENT ACCOUNT</span>
+        <h3 style="margin-top:6px;">Request tutors, without retyping</h3>
+        <p style="color:var(--ink-soft); font-size:0.88rem; margin-bottom:20px;">One login lets you submit requests for as many subjects or tutors as you need, and see their status any time.</p>
 
-        <form id="tutorRequestForm" novalidate>
-          <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabLogin">Log in</button>
+          <button class="auth-tab" id="tabRegister">Register</button>
+        </div>
 
-          <div class="field-row">
-            <div class="field">
-              <label for="parentName">Your name <span class="req">*</span></label>
-              <input type="text" id="parentName" name="Parent/Student Name" required>
-              <span class="field-error">Enter your name</span>
-            </div>
-            <div class="field">
-              <label for="studentClass">Student's class <span class="req">*</span></label>
-              <select id="studentClass" name="Class" required>
-                <option value="">Select class</option>
-                <option>Nursery–5</option>
-                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-                <option>11</option><option>12</option>
-                <option>Competitive exam aspirant</option>
-                <option>College / other</option>
-              </select>
-              <span class="field-error">Select a class</span>
-            </div>
-          </div>
+        <div class="auth-error" id="authError"></div>
 
-          <div class="field-row">
-            <div class="field">
-              <label for="phone">Phone / WhatsApp <span class="req">*</span></label>
-              <input type="tel" id="phone" name="Phone" required placeholder="10-digit mobile number">
-              <span class="field-error">Enter a phone number</span>
-            </div>
-            <div class="field">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="Email" placeholder="optional">
-            </div>
-          </div>
-
-          <div class="field-row">
-            <div class="field">
-              <label for="board">Board</label>
-              <select id="board" name="Board">
-                <option value="">Select board</option>
-                <option>CBSE</option><option>ICSE</option><option>IB</option>
-                <option>State board</option><option>Not applicable</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="mode">Preferred mode <span class="req">*</span></label>
-              <select id="mode" name="Mode" required>
-                <option value="">Select mode</option>
-                <option>Home visit</option><option>Online</option><option>Either</option>
-              </select>
-              <span class="field-error">Select a mode</span>
-            </div>
-          </div>
-
+        <form id="loginForm" novalidate>
           <div class="field">
-            <label for="subjects">Subject(s) needed <span class="req">*</span></label>
-            <input type="text" id="subjects" name="Subjects" required placeholder="e.g. Mathematics, Physics">
-            <span class="field-error">Tell us which subject(s)</span>
+            <label for="lPhone">Phone number <span class="req">*</span></label>
+            <input type="tel" id="lPhone" required placeholder="10-digit mobile number">
           </div>
-
           <div class="field">
-            <label for="locality">Locality / area (or "online only") <span class="req">*</span></label>
-            <input type="text" id="locality" name="Locality" required placeholder="e.g. Lajpat Nagar, New Delhi">
-            <span class="field-error">Enter a locality</span>
+            <label for="lPassword">Password <span class="req">*</span></label>
+            <input type="password" id="lPassword" required>
           </div>
-
-          <div class="field">
-            <label for="notes">Anything else the coordinator should know</label>
-            <textarea id="notes" name="Notes" rows="3" placeholder="Preferred timing, tutor gender preference, exam goals, etc."></textarea>
-          </div>
-
-          <div class="checkbox-row" style="margin-bottom:22px;">
-            <input type="checkbox" id="consent" name="Consent" required>
-            <label for="consent">I agree to be contacted by JT Education Bureau by phone, WhatsApp or email about this request. <span class="req">*</span></label>
-          </div>
-
-          <button type="submit" class="btn btn-primary btn-block">Submit request</button>
-          <p class="form-note">By submitting, your details are added to our tutor-matching registry. We never share your contact information with a tutor until you approve a match.</p>
+          <button type="submit" class="btn btn-primary btn-block">Log in</button>
         </form>
 
-        <div class="form-success" id="formSuccess">
-          <svg class="stamp-icon" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="none" stroke="#3B6D11" stroke-width="2"/><path d="M20 33l8 8 16-18" fill="none" stroke="#3B6D11" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <h3>Request received</h3>
-          <p style="color:var(--ink-soft)">A coordinator will call or WhatsApp you within 24 hours with shortlisted tutors. Keep an eye on <strong>+91&nbsp;80760&nbsp;64782</strong>.</p>
-          <a href="index.html" class="btn btn-outline">Back to home</a>
-        </div>
+        <form id="registerForm" novalidate style="display:none;">
+          <div class="field">
+            <label for="rName">Your name <span class="req">*</span></label>
+            <input type="text" id="rName" required>
+          </div>
+          <div class="field">
+            <label for="rPhone">Phone number <span class="req">*</span></label>
+            <input type="tel" id="rPhone" required placeholder="10-digit mobile number">
+          </div>
+          <div class="field">
+            <label for="rEmail">Email</label>
+            <input type="email" id="rEmail" placeholder="optional">
+          </div>
+          <div class="field">
+            <label for="rPassword">Create a password <span class="req">*</span></label>
+            <input type="password" id="rPassword" required minlength="6">
+            <span class="field-error" style="display:block; color:var(--ink-soft); font-size:0.78rem; margin-top:5px;">At least 6 characters.</span>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Create account</button>
+        </form>
       </div>
-
     </div>
-  </section>
+  </div>
 </main>
 
 <div id="site-footer-mount"></div>
@@ -133,12 +74,78 @@
 <script>
   jtRenderHeader("find-a-tutor.html");
   jtRenderFooter();
-  jtSetupForm(document.getElementById("tutorRequestForm"), "tutor_request");
 
-  // Prefill from a "Request this tutor" link on the Browse Tutors page
-  const params = new URLSearchParams(location.search);
-  if (params.get("subject")) document.getElementById("subjects").value = params.get("subject");
-  if (params.get("tutor")) document.getElementById("notes").value = `Interested in: ${params.get("tutor")}`;
+  // already logged in? skip straight to the dashboard
+  const existing = jtGetSession();
+  if (existing && existing.role === "student") location.href = "student-dashboard.html" + location.search;
+
+  const tabLogin = document.getElementById("tabLogin");
+  const tabRegister = document.getElementById("tabRegister");
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+  const errorBox = document.getElementById("authError");
+
+  function showError(msg) { errorBox.textContent = msg; errorBox.classList.add("show"); }
+  function clearError() { errorBox.classList.remove("show"); }
+
+  tabLogin.addEventListener("click", () => {
+    tabLogin.classList.add("active"); tabRegister.classList.remove("active");
+    loginForm.style.display = ""; registerForm.style.display = "none"; clearError();
+  });
+  tabRegister.addEventListener("click", () => {
+    tabRegister.classList.add("active"); tabLogin.classList.remove("active");
+    registerForm.style.display = ""; loginForm.style.display = "none"; clearError();
+  });
+
+  const REASONS = {
+    invalid_phone: "Enter a valid 10-digit phone number.",
+    weak_password: "Password needs to be at least 6 characters.",
+    phone_exists: "An account with this phone number already exists — try logging in instead.",
+    invalid_credentials: "That phone number or password doesn't match our records.",
+    too_many_attempts: "Too many attempts — please wait 15 minutes and try again.",
+    not_configured: "The account system isn't connected yet. See apps-script/README.md.",
+    network: "Couldn't reach the server — check your connection and try again."
+  };
+
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clearError();
+    const btn = loginForm.querySelector("button");
+    btn.disabled = true; btn.textContent = "Logging in…";
+    const res = await jtApiCall("login", {
+      role: "student",
+      phone: document.getElementById("lPhone").value,
+      password: document.getElementById("lPassword").value
+    });
+    btn.disabled = false; btn.textContent = "Log in";
+    if (res.ok) {
+      jtSaveSession(res.token, "student");
+      location.href = "student-dashboard.html" + location.search;
+    } else {
+      showError(REASONS[res.reason] || "Something went wrong — please try again.");
+    }
+  });
+
+  registerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clearError();
+    const btn = registerForm.querySelector("button");
+    btn.disabled = true; btn.textContent = "Creating account…";
+    const res = await jtApiCall("register", {
+      role: "student",
+      name: document.getElementById("rName").value,
+      phone: document.getElementById("rPhone").value,
+      email: document.getElementById("rEmail").value,
+      password: document.getElementById("rPassword").value
+    });
+    btn.disabled = false; btn.textContent = "Create account";
+    if (res.ok) {
+      jtSaveSession(res.token, "student");
+      location.href = "student-dashboard.html" + location.search;
+    } else {
+      showError(REASONS[res.reason] || "Something went wrong — please try again.");
+    }
+  });
 </script>
 </body>
 </html>
