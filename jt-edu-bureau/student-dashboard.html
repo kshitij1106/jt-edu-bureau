@@ -86,8 +86,8 @@
               </div>
             </div>
             <div class="field">
-              <label for="pLocality">Locality</label>
-              <input type="text" id="pLocality" placeholder="e.g. Lajpat Nagar">
+              <label for="pLocality">Area</label>
+              <input type="text" id="pLocality" placeholder="e.g. Lajpat Nagar — not your exact address">
             </div>
             <button type="submit" class="btn btn-outline">Save</button>
             <span id="profileSaved" style="font-size:0.82rem; color:var(--success); margin-left:10px; display:none;">Saved</span>
@@ -190,6 +190,16 @@
   (async () => {
     const auth = await jtRequireAuth("student", "find-a-tutor.html" + location.search);
     if (!auth) return;
+    if (auth.error) {
+      document.getElementById("loadingScreen").innerHTML =
+        `<div style="text-align:center;">
+           <p style="color:var(--stamp);">Couldn't load your account (${auth.error}).</p>
+           <button class="btn btn-outline" onclick="location.reload()">Try again</button>
+           <button class="btn btn-outline" id="errLogout">Log out</button>
+         </div>`;
+      document.getElementById("errLogout").addEventListener("click", () => { jtClearSession(); location.href = "find-a-tutor.html"; });
+      return;
+    }
     SESSION = auth;
     document.getElementById("welcomeName").textContent = auth.profile.Name || "there";
     document.getElementById("pName").value = auth.profile.Name || "";

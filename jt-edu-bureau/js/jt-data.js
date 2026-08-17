@@ -16,11 +16,11 @@
 const JT_CONFIG = {
   // ID of the PUBLIC content Sheet (shared "Anyone with the link – Viewer").
   // From its URL, the long string between /d/ and /edit.
-  SHEET_ID: "1E7K-xfSUehVzG5ptUhkyshE4FnwihA_0kevtbQLoL1w",
+  SHEET_ID: "PASTE_YOUR_PUBLIC_SHEET_ID_HERE",
 
   // The /exec URL from deploying Code.gs as a Web App INSIDE THE
   // PRIVATE leads Sheet (that sheet itself stays un-shared).
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxOrZMk5mE4lzz_Ov2gEEQlGhdNs260IP8YRxgUtPzpj09OJNrKbQhSRQIAwJfV7izXaw/exec",
+  APPS_SCRIPT_URL: "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE",
 
   // Tab names — keep these exact names in your Sheet, or edit to match
   TABS: {
@@ -130,7 +130,7 @@ function jtNormalizeImageUrl(url) {
   if (!url) return url;
   url = url.trim();
   const m = url.match(/drive\.google\.com\/file\/d\/([^/]+)/) || url.match(/drive\.google\.com\/open\?id=([^&]+)/);
-  if (m) return `https://lh3.googleusercontent.com/d/${m[1]}`;
+  if (m) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
   return url;
 }
 
@@ -209,8 +209,11 @@ function jtClearSession() {
 
 /**
  * Call at the top of any dashboard page. Redirects to the right
- * login page if there's no session, or if the session is for the
- * wrong role (e.g. a tutor token on the student dashboard).
+ * login page if there's no session at all. If a session exists but
+ * the profile fetch fails (e.g. a brief delay right after
+ * registration), retries once before giving up — and on persistent
+ * failure, leaves the session intact and lets the caller show a
+ * visible error instead of silently bouncing back to login.
  */
 async function jtRequireAuth(expectedRole, loginPage) {
   const session = jtGetSession();
@@ -218,11 +221,15 @@ async function jtRequireAuth(expectedRole, loginPage) {
     location.href = loginPage;
     return null;
   }
-  const res = await jtApiCall("getProfile", { token: session.token });
+
+  let res = await jtApiCall("getProfile", { token: session.token });
   if (!res.ok) {
-    jtClearSession();
-    location.href = loginPage;
-    return null;
+    await new Promise(r => setTimeout(r, 900));
+    res = await jtApiCall("getProfile", { token: session.token });
+  }
+
+  if (!res.ok) {
+    return { token: session.token, profile: null, error: res.reason || "unknown" };
   }
   return { token: session.token, profile: res.profile };
 }

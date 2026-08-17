@@ -218,7 +218,7 @@ function handleUploadPhoto(body) {
   var blob = Utilities.newBlob(bytes, body.mimeType || "image/jpeg", session.phone + "-" + Date.now());
   var file = folder.createFile(blob);
   file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-  var url = "https://lh3.googleusercontent.com/d/" + file.getId();
+  var url = "https://drive.google.com/uc?export=view&id=" + file.getId();
 
   var sheet = getAccountSheet("tutor");
   var found = findRowByPhone(sheet, session.phone);

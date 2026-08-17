@@ -17,11 +17,11 @@
 
 <main>
   <div class="portal-shell">
-    <div class="portal-narrow">
+    <div class="portal-narrow" id="panelWrap" style="max-width:460px;">
       <div class="form-panel">
         <span class="form-no">TUTOR ACCOUNT</span>
-        <h3 style="margin-top:6px;">Manage your own listing</h3>
-        <p style="color:var(--ink-soft); font-size:0.88rem; margin-bottom:20px;">Set your rate, description, photo and subjects yourself, any time — no need to go through a coordinator to update them.</p>
+        <h3 style="margin-top:6px;" id="panelTitle">Manage your own listing</h3>
+        <p style="color:var(--ink-soft); font-size:0.88rem; margin-bottom:20px;" id="panelSub">Set your rate, description, photo and subjects yourself, any time — no need to go through a coordinator to update them.</p>
 
         <div class="auth-tabs">
           <button class="auth-tab active" id="tabLogin">Log in</button>
@@ -43,25 +43,98 @@
         </form>
 
         <form id="registerForm" novalidate style="display:none;">
-          <div class="field">
-            <label for="rName">Your name <span class="req">*</span></label>
-            <input type="text" id="rName" required>
+          <p style="color:var(--ink-soft); font-size:0.84rem; margin-bottom:18px;">A coordinator reviews this before your profile goes live on the public directory — fill in what you can now, you can always edit it later.</p>
+
+          <div class="photo-upload">
+            <div class="photo-preview" id="photoPreview">?</div>
+            <div>
+              <div class="file-field" style="text-align:left; padding:10px 14px;">
+                <input type="file" id="rPhoto" accept="image/*">
+                <span style="font-size:0.76rem;">JPG or PNG, up to 1MB. Optional — can add later.</span>
+              </div>
+              <p id="photoStatus" style="font-size:0.78rem; color:var(--ink-soft); margin:6px 0 0;"></p>
+            </div>
           </div>
-          <div class="field">
-            <label for="rPhone">Phone number <span class="req">*</span></label>
-            <input type="tel" id="rPhone" required placeholder="10-digit mobile number">
+
+          <div class="field-row">
+            <div class="field">
+              <label for="rName">Your name <span class="req">*</span></label>
+              <input type="text" id="rName" required>
+            </div>
+            <div class="field">
+              <label for="rPhone">Phone number <span class="req">*</span></label>
+              <input type="tel" id="rPhone" required placeholder="10-digit mobile number">
+            </div>
           </div>
-          <div class="field">
-            <label for="rEmail">Email</label>
-            <input type="email" id="rEmail">
+
+          <div class="field-row">
+            <div class="field">
+              <label for="rEmail">Email</label>
+              <input type="email" id="rEmail">
+            </div>
+            <div class="field">
+              <label for="rPassword">Password <span class="req">*</span></label>
+              <input type="password" id="rPassword" required minlength="6">
+            </div>
           </div>
+
           <div class="field">
-            <label for="rPassword">Create a password <span class="req">*</span></label>
-            <input type="password" id="rPassword" required minlength="6">
-            <span class="field-error" style="display:block; color:var(--ink-soft); font-size:0.78rem; margin-top:5px;">At least 6 characters.</span>
+            <label for="rSubjects">Subjects you teach <span class="req">*</span></label>
+            <input type="text" id="rSubjects" required placeholder="e.g. Mathematics, Physics">
           </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="rClasses">Classes</label>
+              <input type="text" id="rClasses" placeholder="e.g. 9-12">
+            </div>
+            <div class="field">
+              <label for="rBoards">Boards</label>
+              <input type="text" id="rBoards" placeholder="e.g. CBSE, ICSE">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="rExams">Exams (if any)</label>
+              <input type="text" id="rExams" placeholder="e.g. JEE, NEET">
+            </div>
+            <div class="field">
+              <label for="rExperience">Experience <span class="req">*</span></label>
+              <input type="text" id="rExperience" required placeholder="e.g. 5 years">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="rQualification">Qualification <span class="req">*</span></label>
+            <input type="text" id="rQualification" required placeholder="e.g. M.Sc Mathematics, B.Ed">
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="rRate">Rate per hour (₹)</label>
+              <input type="text" id="rRate" placeholder="e.g. 600">
+            </div>
+            <div class="field">
+              <label for="rMode">Mode <span class="req">*</span></label>
+              <select id="rMode" required>
+                <option value="">Select mode</option>
+                <option>Home visit</option><option>Online</option><option>Either</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="rLocality">Area you can cover <span class="req">*</span></label>
+            <input type="text" id="rLocality" required placeholder="e.g. South Delhi">
+          </div>
+
+          <div class="field">
+            <label for="rDescription">Short description</label>
+            <textarea id="rDescription" rows="3" placeholder="Your teaching style, notable results, what makes your classes work."></textarea>
+          </div>
+
           <button type="submit" class="btn btn-primary btn-block">Create account</button>
-          <p class="form-note">After registering, complete your profile — a coordinator reviews it before it appears on the public tutor directory.</p>
         </form>
       </div>
     </div>
@@ -84,6 +157,7 @@
   const loginForm = document.getElementById("loginForm");
   const registerForm = document.getElementById("registerForm");
   const errorBox = document.getElementById("authError");
+  const panelWrap = document.getElementById("panelWrap");
 
   function showError(msg) { errorBox.textContent = msg; errorBox.classList.add("show"); }
   function clearError() { errorBox.classList.remove("show"); }
@@ -91,10 +165,12 @@
   tabLogin.addEventListener("click", () => {
     tabLogin.classList.add("active"); tabRegister.classList.remove("active");
     loginForm.style.display = ""; registerForm.style.display = "none"; clearError();
+    panelWrap.style.maxWidth = "460px";
   });
   tabRegister.addEventListener("click", () => {
     tabRegister.classList.add("active"); tabLogin.classList.remove("active");
     registerForm.style.display = ""; loginForm.style.display = "none"; clearError();
+    panelWrap.style.maxWidth = "640px";
   });
 
   const REASONS = {
@@ -126,25 +202,71 @@
     }
   });
 
+  // photo preview only (actual upload happens after account creation)
+  let pendingPhotoFile = null;
+  document.getElementById("rPhoto").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    const statusEl = document.getElementById("photoStatus");
+    if (!file) return;
+    if (file.size > 1024 * 1024) {
+      statusEl.textContent = "That file is over 1MB — please choose a smaller image.";
+      statusEl.style.color = "var(--stamp)";
+      e.target.value = ""; pendingPhotoFile = null;
+      return;
+    }
+    pendingPhotoFile = file;
+    statusEl.textContent = "Ready to upload once your account is created.";
+    statusEl.style.color = "var(--ink-soft)";
+    const reader = new FileReader();
+    reader.onload = () => {
+      document.getElementById("photoPreview").innerHTML = `<img src="${reader.result}" alt="" style="width:100%;height:100%;object-fit:cover;">`;
+    };
+    reader.readAsDataURL(file);
+  });
+
   registerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     clearError();
     const btn = registerForm.querySelector("button");
     btn.disabled = true; btn.textContent = "Creating account…";
+
     const res = await jtApiCall("register", {
       role: "tutor",
       name: document.getElementById("rName").value,
       phone: document.getElementById("rPhone").value,
       email: document.getElementById("rEmail").value,
-      password: document.getElementById("rPassword").value
+      password: document.getElementById("rPassword").value,
+      subjects: document.getElementById("rSubjects").value,
+      classes: document.getElementById("rClasses").value,
+      boards: document.getElementById("rBoards").value,
+      exams: document.getElementById("rExams").value,
+      experience: document.getElementById("rExperience").value,
+      qualification: document.getElementById("rQualification").value,
+      rate: document.getElementById("rRate").value,
+      mode: document.getElementById("rMode").value,
+      locality: document.getElementById("rLocality").value,
+      description: document.getElementById("rDescription").value
     });
-    btn.disabled = false; btn.textContent = "Create account";
-    if (res.ok) {
-      jtSaveSession(res.token, "tutor");
-      location.href = "tutor-dashboard.html";
-    } else {
+
+    if (!res.ok) {
+      btn.disabled = false; btn.textContent = "Create account";
       showError(REASONS[res.reason] || "Something went wrong — please try again.");
+      return;
     }
+
+    jtSaveSession(res.token, "tutor");
+
+    if (pendingPhotoFile) {
+      btn.textContent = "Uploading photo…";
+      const base64 = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(",")[1]);
+        reader.readAsDataURL(pendingPhotoFile);
+      });
+      await jtApiCall("uploadPhoto", { token: res.token, photoBase64: base64, mimeType: pendingPhotoFile.type });
+    }
+
+    location.href = "tutor-dashboard.html";
   });
 </script>
 </body>

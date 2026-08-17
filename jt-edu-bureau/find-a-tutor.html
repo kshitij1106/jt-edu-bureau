@@ -47,19 +47,49 @@
             <label for="rName">Your name <span class="req">*</span></label>
             <input type="text" id="rName" required>
           </div>
-          <div class="field">
-            <label for="rPhone">Phone number <span class="req">*</span></label>
-            <input type="tel" id="rPhone" required placeholder="10-digit mobile number">
-          </div>
-          <div class="field">
-            <label for="rEmail">Email</label>
-            <input type="email" id="rEmail" placeholder="optional">
+          <div class="field-row">
+            <div class="field">
+              <label for="rPhone">Phone number <span class="req">*</span></label>
+              <input type="tel" id="rPhone" required placeholder="10-digit mobile number">
+            </div>
+            <div class="field">
+              <label for="rEmail">Email</label>
+              <input type="email" id="rEmail" placeholder="optional">
+            </div>
           </div>
           <div class="field">
             <label for="rPassword">Create a password <span class="req">*</span></label>
             <input type="password" id="rPassword" required minlength="6">
             <span class="field-error" style="display:block; color:var(--ink-soft); font-size:0.78rem; margin-top:5px;">At least 6 characters.</span>
           </div>
+
+          <hr class="ledger-rule" style="margin:20px 0;">
+          <p style="color:var(--ink-soft); font-size:0.84rem; margin-bottom:14px;">A little about what you're looking for — saved to your profile, so marking interest in a tutor is a single click.</p>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="rClass">Class <span class="req">*</span></label>
+              <select id="rClass" required>
+                <option value="">Select</option>
+                <option>Nursery–5</option><option>6</option><option>7</option><option>8</option>
+                <option>9</option><option>10</option><option>11</option><option>12</option>
+                <option>Competitive exam aspirant</option><option>College / other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="rBoard">Board</label>
+              <select id="rBoard">
+                <option value="">Select</option>
+                <option>CBSE</option><option>ICSE</option><option>IB</option>
+                <option>State board</option><option>Not applicable</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="rLocality">Area <span class="req">*</span></label>
+            <input type="text" id="rLocality" required placeholder="e.g. Lajpat Nagar — not your exact address">
+          </div>
+
           <button type="submit" class="btn btn-primary btn-block">Create account</button>
         </form>
       </div>
@@ -136,7 +166,10 @@
       name: document.getElementById("rName").value,
       phone: document.getElementById("rPhone").value,
       email: document.getElementById("rEmail").value,
-      password: document.getElementById("rPassword").value
+      password: document.getElementById("rPassword").value,
+      studentClass: document.getElementById("rClass").value,
+      board: document.getElementById("rBoard").value,
+      locality: document.getElementById("rLocality").value
     });
     btn.disabled = false; btn.textContent = "Create account";
     if (res.ok) {

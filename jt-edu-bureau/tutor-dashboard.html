@@ -106,7 +106,7 @@
           </div>
 
           <div class="field">
-            <label for="pLocality">Locality / region</label>
+            <label for="pLocality">Area you cover</label>
             <input type="text" id="pLocality" placeholder="e.g. South Delhi">
           </div>
 
@@ -144,6 +144,16 @@
 
   let SESSION;
 
+function setAvatarImage(el, url, name) {
+    const initialsText = (name || "?").trim().split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+    if (!url) { el.textContent = initialsText; return; }
+    const img = new Image();
+    img.alt = "";
+    img.onload = () => { el.innerHTML = ""; el.appendChild(img); };
+    img.onerror = () => { el.textContent = initialsText; };
+    img.src = url;
+  }
+
   function fillForm(profile) {
     document.getElementById("welcomeName").textContent = profile.Name || "there";
     const verified = String(profile.Verified || "No").toLowerCase() === "yes";
@@ -165,11 +175,7 @@
     document.getElementById("pDescription").value = profile.Description || "";
 
     const preview = document.getElementById("photoPreview");
-    if (profile.Photo) {
-      preview.innerHTML = `<img src="${jtNormalizeImageUrl(profile.Photo)}" alt="">`;
-    } else {
-      preview.textContent = (profile.Name || "?").trim().split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
-    }
+    setAvatarImage(preview, profile.Photo ? jtNormalizeImageUrl(profile.Photo) : null, profile.Name);
   }
 
   document.getElementById("photoInput").addEventListener("change", async (e) => {
@@ -190,7 +196,7 @@
       const base64 = reader.result.split(",")[1];
       const res = await jtApiCall("uploadPhoto", { token: SESSION.token, photoBase64: base64, mimeType: file.type });
       if (res.ok) {
-        document.getElementById("photoPreview").innerHTML = `<img src="${jtNormalizeImageUrl(res.url)}" alt="">`;
+        setAvatarImage(document.getElementById("photoPreview"), jtNormalizeImageUrl(res.url), document.getElementById("pName").value);
         statusEl.textContent = "Photo updated.";
         statusEl.style.color = "var(--success)";
       } else {
@@ -272,6 +278,16 @@
   (async () => {
     const auth = await jtRequireAuth("tutor", "become-a-tutor.html");
     if (!auth) return;
+    if (auth.error) {
+      document.getElementById("loadingScreen").innerHTML =
+        `<div style="text-align:center;">
+           <p style="color:var(--stamp);">Couldn't load your account (${auth.error}).</p>
+           <button class="btn btn-outline" onclick="location.reload()">Try again</button>
+           <button class="btn btn-outline" id="errLogout">Log out</button>
+         </div>`;
+      document.getElementById("errLogout").addEventListener("click", () => { jtClearSession(); location.href = "become-a-tutor.html"; });
+      return;
+    }
     SESSION = auth;
     fillForm(auth.profile);
     document.getElementById("loadingScreen").style.display = "none";
