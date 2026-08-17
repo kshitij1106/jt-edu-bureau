@@ -16,11 +16,11 @@
 const JT_CONFIG = {
   // ID of the PUBLIC content Sheet (shared "Anyone with the link – Viewer").
   // From its URL, the long string between /d/ and /edit.
-  SHEET_ID: "PASTE_YOUR_PUBLIC_SHEET_ID_HERE",
+  SHEET_ID: "1E7K-xfSUehVzG5ptUhkyshE4FnwihA_0kevtbQLoL1w",
 
   // The /exec URL from deploying Code.gs as a Web App INSIDE THE
   // PRIVATE leads Sheet (that sheet itself stays un-shared).
-  APPS_SCRIPT_URL: "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxOrZMk5mE4lzz_Ov2gEEQlGhdNs260IP8YRxgUtPzpj09OJNrKbQhSRQIAwJfV7izXaw/exec",
 
   // Tab names — keep these exact names in your Sheet, or edit to match
   TABS: {
