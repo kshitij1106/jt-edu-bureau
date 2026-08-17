@@ -49,7 +49,7 @@ future `git push` redeploys automatically.
 
 ## D. Sheets (do this before or after A–C, doesn't matter)
 
-See `apps-script/README.md`. Public sheet gets `SetupPublicContentSheet.gs`;
-private sheet gets both `Code.gs` and `Auth.gs` in the same script
-project. Paste the resulting Sheet ID and Web App URL into
-`js/jt-data.js`, commit, push.
+See `apps-script/README.md`. Sheet 1 (public) gets
+`SetupPublicContentSheet.gs`; Sheet 2 (private) gets both `Code.gs`
+and `Auth.gs` in the same script project. Paste the resulting Sheet
+ID and Web App URL into `js/jt-data.js`, commit, push.

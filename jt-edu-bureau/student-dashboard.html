@@ -21,84 +21,83 @@
       <div class="dash-header">
         <div>
           <h1 style="font-size:clamp(1.7rem,3vw,2.2rem);">Welcome, <span id="welcomeName">—</span></h1>
-          <p class="dash-sub">Submit a new request any time, or check the status of ones you've already sent.</p>
+          <p class="dash-sub">Browse tutors and mark interest in one click — your details are on file, no retyping.</p>
         </div>
         <button class="btn btn-outline" id="logoutBtn">Log out</button>
       </div>
     </div>
   </section>
 
-  <section class="section" style="padding-top:16px;">
-    <div class="container" style="display:grid; grid-template-columns:1fr 1.15fr; gap:32px; align-items:flex-start;">
-
-      <div class="form-panel">
-        <span class="form-no">FORM NO. JT-R &middot; NEW REQUEST</span>
-        <h3 style="margin-top:6px;">Request a tutor</h3>
-        <hr class="ledger-rule" style="margin:18px 0 22px;">
-        <form id="requestForm" novalidate>
-          <div class="field">
-            <label for="rSubject">Subject(s) needed <span class="req">*</span></label>
-            <input type="text" id="rSubject" required placeholder="e.g. Mathematics, Physics">
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="rClass">Class</label>
-              <select id="rClass">
-                <option value="">Select class</option>
-                <option>Nursery–5</option><option>6</option><option>7</option><option>8</option>
-                <option>9</option><option>10</option><option>11</option><option>12</option>
-                <option>Competitive exam aspirant</option><option>College / other</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="rBoard">Board</label>
-              <select id="rBoard">
-                <option value="">Select board</option>
-                <option>CBSE</option><option>ICSE</option><option>IB</option>
-                <option>State board</option><option>Not applicable</option>
-              </select>
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="rMode">Preferred mode <span class="req">*</span></label>
-              <select id="rMode" required>
-                <option value="">Select mode</option>
-                <option>Home visit</option><option>Online</option><option>Either</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="rLocality">Locality <span class="req">*</span></label>
-              <input type="text" id="rLocality" required placeholder="e.g. Lajpat Nagar">
-            </div>
-          </div>
-          <div class="field">
-            <label for="rNotes">Anything else</label>
-            <textarea id="rNotes" rows="3" placeholder="Preferred timing, exam goals, a specific tutor you liked, etc."></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary btn-block">Submit request</button>
-        </form>
+  <div class="container">
+    <div class="form-panel" id="confirmPanel" style="display:none; margin-bottom:24px; border-color:var(--brass);">
+      <span class="form-no">CONFIRM INTEREST</span>
+      <h3 style="margin-top:6px;">Send your details to <span id="confirmTutorName">this tutor</span>?</h3>
+      <p style="color:var(--ink-soft); font-size:0.88rem;">They'll see your name, class, board and locality in their dashboard and can follow up directly.</p>
+      <div style="display:flex; gap:10px; margin-top:14px;">
+        <button class="btn btn-brass" id="confirmYes">Yes, send interest</button>
+        <button class="btn btn-outline" id="confirmNo">Not now</button>
       </div>
+    </div>
+  </div>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container dash-grid">
 
       <div>
-        <h3 style="margin-bottom:14px;">Your requests</h3>
-        <div id="historyList"><p class="portal-loading">Loading…</p></div>
+        <div class="cta-banner" style="padding:28px;">
+          <div>
+            <h2 style="font-size:1.3rem;">Browse the tutor directory</h2>
+            <p style="font-size:0.88rem;">Filter by subject, region or mode, then mark interest in a click.</p>
+          </div>
+          <a href="tutors.html" class="btn btn-brass">Browse tutors</a>
+        </div>
 
-        <div class="form-panel" style="margin-top:28px;">
+        <div class="form-panel" style="margin-top:24px;">
           <h3 style="margin-top:0;">Your details</h3>
+          <p style="color:var(--ink-soft); font-size:0.84rem; margin-bottom:16px;">Kept on file so marking interest is a single click — update any time.</p>
           <form id="profileForm" novalidate>
-            <div class="field">
-              <label for="pName">Name</label>
-              <input type="text" id="pName">
+            <div class="field-row">
+              <div class="field">
+                <label for="pName">Name</label>
+                <input type="text" id="pName">
+              </div>
+              <div class="field">
+                <label for="pEmail">Email</label>
+                <input type="email" id="pEmail">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="pClass">Class</label>
+                <select id="pClass">
+                  <option value="">Select</option>
+                  <option>Nursery–5</option><option>6</option><option>7</option><option>8</option>
+                  <option>9</option><option>10</option><option>11</option><option>12</option>
+                  <option>Competitive exam aspirant</option><option>College / other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="pBoard">Board</label>
+                <select id="pBoard">
+                  <option value="">Select</option>
+                  <option>CBSE</option><option>ICSE</option><option>IB</option>
+                  <option>State board</option><option>Not applicable</option>
+                </select>
+              </div>
             </div>
             <div class="field">
-              <label for="pEmail">Email</label>
-              <input type="email" id="pEmail">
+              <label for="pLocality">Locality</label>
+              <input type="text" id="pLocality" placeholder="e.g. Lajpat Nagar">
             </div>
             <button type="submit" class="btn btn-outline">Save</button>
             <span id="profileSaved" style="font-size:0.82rem; color:var(--success); margin-left:10px; display:none;">Saved</span>
           </form>
         </div>
+      </div>
+
+      <div>
+        <h3 style="margin-bottom:14px;">Tutors you've shown interest in</h3>
+        <div id="historyList"><p class="portal-loading">Loading…</p></div>
       </div>
 
     </div>
@@ -124,18 +123,15 @@
   }
 
   async function loadHistory() {
-    const res = await jtApiCall("getMyRequests", { token: SESSION.token });
+    const res = await jtApiCall("getMyInterests", { token: SESSION.token });
     const list = document.getElementById("historyList");
-    if (!res.ok || !res.requests.length) {
-      list.innerHTML = `<p style="color:var(--ink-soft); font-size:0.88rem;">No requests yet — submit one alongside.</p>`;
+    if (!res.ok || !res.interests.length) {
+      list.innerHTML = `<p style="color:var(--ink-soft); font-size:0.88rem;">No interests marked yet — browse tutors to get started.</p>`;
       return;
     }
-    list.innerHTML = res.requests.map(r => `
+    list.innerHTML = res.interests.map(r => `
       <div class="history-item">
-        <div>
-          <h4>${r.Subject || "Tutor request"}</h4>
-          <div class="meta">${[r.Class, r.Board, r.Locality, r.Mode].filter(Boolean).join(" · ")}</div>
-        </div>
+        <div><h4>${r.TutorName || "Tutor"}</h4></div>
         <div style="text-align:right;">
           ${statusPill(r.Status)}
           <div class="when">${r.Timestamp ? new Date(r.Timestamp).toLocaleDateString() : ""}</div>
@@ -143,35 +139,17 @@
       </div>`).join("");
   }
 
-  document.getElementById("requestForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector("button");
-    btn.disabled = true; btn.textContent = "Submitting…";
-    const res = await jtApiCall("submitRequest", {
-      token: SESSION.token,
-      data: {
-        Subject: document.getElementById("rSubject").value,
-        Class: document.getElementById("rClass").value,
-        Board: document.getElementById("rBoard").value,
-        Mode: document.getElementById("rMode").value,
-        Locality: document.getElementById("rLocality").value,
-        Notes: document.getElementById("rNotes").value
-      }
-    });
-    btn.disabled = false; btn.textContent = "Submit request";
-    if (res.ok) {
-      e.target.reset();
-      loadHistory();
-    } else {
-      alert("Couldn't submit — please try again in a moment.");
-    }
-  });
-
   document.getElementById("profileForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const res = await jtApiCall("updateProfile", {
       token: SESSION.token,
-      data: { Name: document.getElementById("pName").value, Email: document.getElementById("pEmail").value }
+      data: {
+        Name: document.getElementById("pName").value,
+        Email: document.getElementById("pEmail").value,
+        Class: document.getElementById("pClass").value,
+        Board: document.getElementById("pBoard").value,
+        Locality: document.getElementById("pLocality").value
+      }
     });
     if (res.ok) {
       document.getElementById("welcomeName").textContent = document.getElementById("pName").value || "there";
@@ -186,20 +164,43 @@
     location.href = "find-a-tutor.html";
   });
 
+  function setupConfirmPanel() {
+    const params = new URLSearchParams(location.search);
+    const tutorPhone = params.get("tutorPhone");
+    const tutorName = params.get("tutorName");
+    if (!tutorPhone) return;
+
+    document.getElementById("confirmTutorName").textContent = tutorName || "this tutor";
+    document.getElementById("confirmPanel").style.display = "block";
+
+    document.getElementById("confirmYes").addEventListener("click", async () => {
+      const btn = document.getElementById("confirmYes");
+      btn.disabled = true; btn.textContent = "Sending…";
+      await jtApiCall("markInterested", { token: SESSION.token, tutorPhone, tutorName });
+      history.replaceState({}, "", "student-dashboard.html");
+      document.getElementById("confirmPanel").style.display = "none";
+      loadHistory();
+    });
+    document.getElementById("confirmNo").addEventListener("click", () => {
+      history.replaceState({}, "", "student-dashboard.html");
+      document.getElementById("confirmPanel").style.display = "none";
+    });
+  }
+
   (async () => {
-    const auth = await jtRequireAuth("student", "find-a-tutor.html");
+    const auth = await jtRequireAuth("student", "find-a-tutor.html" + location.search);
     if (!auth) return;
     SESSION = auth;
     document.getElementById("welcomeName").textContent = auth.profile.Name || "there";
     document.getElementById("pName").value = auth.profile.Name || "";
     document.getElementById("pEmail").value = auth.profile.Email || "";
+    document.getElementById("pClass").value = auth.profile.Class || "";
+    document.getElementById("pBoard").value = auth.profile.Board || "";
+    document.getElementById("pLocality").value = auth.profile.Locality || "";
     document.getElementById("loadingScreen").style.display = "none";
     document.getElementById("app").style.display = "";
     loadHistory();
-
-    const params = new URLSearchParams(location.search);
-    if (params.get("subject")) document.getElementById("rSubject").value = params.get("subject");
-    if (params.get("tutor")) document.getElementById("rNotes").value = `Interested in: ${params.get("tutor")}`;
+    setupConfirmPanel();
   })();
 </script>
 </body>

@@ -1,33 +1,28 @@
 /**
- * JT EDUCATION BUREAU — accounts, sessions, profiles, requests,
- * and photo upload. Phone + password, stored only as a salted,
- * stretched hash — never plaintext.
- *
- * Honest limitation, stated plainly: this is a hand-built login
- * system, not a dedicated auth provider. It hashes and salts
- * passwords, rate-limits guessing, and never returns another
- * account's data — but it doesn't have the years of hardening a
- * service like Supabase Auth has. Reasonable for the bureau's
- * current scale; worth revisiting if the business scales up a lot
- * or handles anything more sensitive than tutoring logistics.
+ * JT EDUCATION BUREAU — accounts, sessions, profiles, tutor
+ * interest, and photo upload. Phone + password, stored only as a
+ * salted, stretched hash — never plaintext, not even for the sheet
+ * owner. See the "Reset Password" column instead (bottom of file)
+ * for how you set/change someone's password directly.
  */
 
-var STUDENT_COLUMNS = ["Phone", "PasswordHash", "Salt", "Name", "Email", "CreatedAt"];
-var STUDENT_EDITABLE = ["Name", "Email"];
+var STUDENT_COLUMNS = ["Phone", "PasswordHash", "Salt", "Name", "Email", "Class", "Board", "Locality", "CreatedAt", "Reset Password"];
+var STUDENT_EDITABLE = ["Name", "Email", "Class", "Board", "Locality"];
 
 var TUTOR_COLUMNS = [
   "Phone", "PasswordHash", "Salt", "Name", "Email",
   "Subjects", "Classes", "Boards", "Exams", "Experience", "Qualification",
-  "RatePerHour", "Description", "Photo", "Locality", "Mode", "Verified", "CreatedAt"
+  "RatePerHour", "Description", "Photo", "Locality", "Mode", "Verified", "CreatedAt", "Reset Password"
 ];
 var TUTOR_EDITABLE = [
   "Name", "Email", "Subjects", "Classes", "Boards", "Exams",
   "Experience", "Qualification", "RatePerHour", "Description", "Locality", "Mode"
 ];
-// Verified is deliberately excluded — only settable by hand in the
-// sheet by whoever owns the Google account, never via the API.
+// Verified and Reset Password are deliberately excluded from EDITABLE —
+// only settable by hand in the sheet by whoever owns the Google
+// account, never via the API.
 
-var REQUEST_COLUMNS = ["Timestamp", "StudentPhone", "Subject", "Class", "Board", "Mode", "Locality", "Notes", "Status"];
+var INTEREST_COLUMNS = ["Timestamp", "StudentPhone", "StudentName", "StudentClass", "StudentBoard", "StudentLocality", "TutorPhone", "TutorName", "Status"];
 var SESSION_COLUMNS = ["Token", "Phone", "Role", "ExpiresAt"];
 
 var MAX_PHOTO_BYTES = 1024 * 1024; // 1MB
@@ -56,14 +51,14 @@ function handleRegister(body) {
   var now = new Date();
 
   if (role === "student") {
-    sheet.appendRow([phone, hash, salt, body.name || "", body.email || "", now]);
+    sheet.appendRow([phone, hash, salt, body.name || "", body.email || "", body.studentClass || "", body.board || "", body.locality || "", now, ""]);
   } else {
     sheet.appendRow([
       phone, hash, salt, body.name || "", body.email || "",
       body.subjects || "", body.classes || "", body.boards || "", body.exams || "",
       body.experience || "", body.qualification || "",
       body.rate || "", body.description || "", "", body.locality || "", body.mode || "",
-      "No", now
+      "No", now, ""
     ]);
   }
 
@@ -141,37 +136,73 @@ function handleUpdateProfile(body) {
   return jsonResponse({ ok: true });
 }
 
-/* ================= student requests ================= */
+/* ================= tutor interest ================= */
 
-function handleSubmitRequest(body) {
+function handleMarkInterested(body) {
   var session = requireSession(body);
   if (!session || session.role !== "student") return jsonResponse({ ok: false, reason: "unauthorized" });
 
-  var sheet = getOrCreateSheet("Requests", REQUEST_COLUMNS);
-  var d = body.data || {};
-  sheet.appendRow([new Date(), session.phone, d.Subject || "", d.Class || "", d.Board || "", d.Mode || "", d.Locality || "", d.Notes || "", "New"]);
+  var studentSheet = getAccountSheet("student");
+  var student = findRowByPhone(studentSheet, session.phone);
+  if (!student) return jsonResponse({ ok: false, reason: "not_found" });
+  var studentProfile = rowToProfile("student", student.values);
+
+  var tutorPhone = normalizePhone(body.tutorPhone);
+  var tutorSheet = getAccountSheet("tutor");
+  var tutor = findRowByPhone(tutorSheet, tutorPhone);
+  if (!tutor) return jsonResponse({ ok: false, reason: "tutor_not_found" });
+  var tutorProfile = rowToProfile("tutor", tutor.values);
+
+  var sheet = getOrCreateSheet("Interests", INTEREST_COLUMNS);
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (normalizePhone(String(data[i][1])) === session.phone && normalizePhone(String(data[i][6])) === tutorPhone) {
+      return jsonResponse({ ok: true, alreadySent: true });
+    }
+  }
+
+  sheet.appendRow([
+    new Date(), session.phone, studentProfile.Name || "",
+    studentProfile.Class || "", studentProfile.Board || "", studentProfile.Locality || "",
+    tutorPhone, tutorProfile.Name || "", "New"
+  ]);
   return jsonResponse({ ok: true });
 }
 
-function handleGetMyRequests(body) {
+function handleGetMyInterests(body) {
   var session = requireSession(body);
   if (!session || session.role !== "student") return jsonResponse({ ok: false, reason: "unauthorized" });
 
-  var sheet = getOrCreateSheet("Requests", REQUEST_COLUMNS);
+  var sheet = getOrCreateSheet("Interests", INTEREST_COLUMNS);
   var data = sheet.getDataRange().getValues();
-  var headers = data[0];
-  var phoneIdx = headers.indexOf("StudentPhone");
-
   var rows = [];
   for (var i = 1; i < data.length; i++) {
-    if (normalizePhone(String(data[i][phoneIdx])) === session.phone) {
-      var obj = {};
-      headers.forEach(function (h, idx) { obj[h] = data[i][idx]; });
-      rows.push(obj);
+    if (normalizePhone(String(data[i][1])) === session.phone) {
+      rows.push({ TutorName: data[i][7], Status: data[i][8], Timestamp: data[i][0] });
     }
   }
-  rows.reverse(); // newest first
-  return jsonResponse({ ok: true, requests: rows });
+  rows.reverse();
+  return jsonResponse({ ok: true, interests: rows });
+}
+
+function handleGetTutorInterests(body) {
+  var session = requireSession(body);
+  if (!session || session.role !== "tutor") return jsonResponse({ ok: false, reason: "unauthorized" });
+
+  var sheet = getOrCreateSheet("Interests", INTEREST_COLUMNS);
+  var data = sheet.getDataRange().getValues();
+  var rows = [];
+  for (var i = 1; i < data.length; i++) {
+    if (normalizePhone(String(data[i][6])) === session.phone) {
+      rows.push({
+        StudentName: data[i][2], StudentPhone: data[i][1],
+        StudentClass: data[i][3], StudentBoard: data[i][4], StudentLocality: data[i][5],
+        Status: data[i][8], Timestamp: data[i][0]
+      });
+    }
+  }
+  rows.reverse();
+  return jsonResponse({ ok: true, interests: rows });
 }
 
 /* ================= tutor photo upload ================= */
@@ -180,11 +211,8 @@ function handleUploadPhoto(body) {
   var session = requireSession(body);
   if (!session || session.role !== "tutor") return jsonResponse({ ok: false, reason: "unauthorized" });
 
-  var base64 = body.photoBase64 || "";
-  var bytes = Utilities.base64Decode(base64);
-  if (bytes.length > MAX_PHOTO_BYTES) {
-    return jsonResponse({ ok: false, reason: "file_too_large" });
-  }
+  var bytes = Utilities.base64Decode(body.photoBase64 || "");
+  if (bytes.length > MAX_PHOTO_BYTES) return jsonResponse({ ok: false, reason: "file_too_large" });
 
   var folder = getOrCreatePhotoFolder();
   var blob = Utilities.newBlob(bytes, body.mimeType || "image/jpeg", session.phone + "-" + Date.now());
@@ -194,9 +222,7 @@ function handleUploadPhoto(body) {
 
   var sheet = getAccountSheet("tutor");
   var found = findRowByPhone(sheet, session.phone);
-  if (found) {
-    sheet.getRange(found.row, TUTOR_COLUMNS.indexOf("Photo") + 1).setValue(url);
-  }
+  if (found) sheet.getRange(found.row, TUTOR_COLUMNS.indexOf("Photo") + 1).setValue(url);
 
   return jsonResponse({ ok: true, url: url });
 }
@@ -221,9 +247,7 @@ function getPublicTutors() {
   var headers = data[0];
   var verifiedIdx = headers.indexOf("Verified");
 
-  // Only ever return fields safe for the public internet — phone,
-  // email, password hash and salt never leave this function.
-  var publicFields = ["Name", "Subjects", "Classes", "Boards", "Exams", "Experience", "Qualification", "RatePerHour", "Description", "Photo", "Locality", "Mode"];
+  var publicFields = ["Phone", "Name", "Subjects", "Classes", "Boards", "Exams", "Experience", "Qualification", "RatePerHour", "Description", "Photo", "Locality", "Mode"];
 
   var results = [];
   for (var i = 1; i < data.length; i++) {
@@ -254,7 +278,7 @@ function getSession(token) {
   var data = sheet.getDataRange().getValues();
   for (var i = 1; i < data.length; i++) {
     if (data[i][0] === token) {
-      if (new Date(data[i][3]) < new Date()) return null; // expired
+      if (new Date(data[i][3]) < new Date()) return null;
       return { phone: data[i][1], role: data[i][2] };
     }
   }
@@ -269,8 +293,8 @@ function requireSession(body) {
 
 function getAccountSheet(role) {
   return role === "student"
-    ? getOrCreateSheet("Student Accounts", STUDENT_COLUMNS)
-    : getOrCreateSheet("Tutor Accounts", TUTOR_COLUMNS);
+    ? getOrCreateSheet("Students", STUDENT_COLUMNS)
+    : getOrCreateSheet("Tutors", TUTOR_COLUMNS);
 }
 
 function findRowByPhone(sheet, phone) {
@@ -285,17 +309,60 @@ function rowToProfile(role, values) {
   var columns = role === "student" ? STUDENT_COLUMNS : TUTOR_COLUMNS;
   var obj = {};
   columns.forEach(function (col, i) {
-    if (col === "PasswordHash" || col === "Salt") return; // never expose, even to the account owner's own client
+    if (col === "PasswordHash" || col === "Salt" || col === "Reset Password") return; // never expose
     obj[col] = values[i];
   });
   return obj;
 }
 
+/* ================= admin: reset a password from the sheet ================= */
+
+/**
+ * Type a new password into the "Reset Password" column for anyone's
+ * row, in either Students or Tutors — this trigger picks it up,
+ * hashes it, and clears the cell automatically. Nothing to run
+ * manually, no deployment needed; it fires the moment you hit Enter.
+ */
+function onEdit(e) {
+  try {
+    var sheet = e.range.getSheet();
+    var name = sheet.getName();
+    if (name !== "Students" && name !== "Tutors") return;
+    if (e.range.getRow() === 1) return; // header row
+
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var resetCol = headers.indexOf("Reset Password") + 1;
+    if (resetCol === 0 || e.range.getColumn() !== resetCol) return;
+
+    var newPassword = String(e.range.getValue() || "").trim();
+    if (!newPassword) return;
+
+    if (newPassword.length < 6) {
+      e.range.setValue("Too short — needs 6+ characters, try again");
+      return;
+    }
+
+    var salt = generateSalt();
+    var hash = hashPassword(newPassword, salt);
+    sheet.getRange(e.range.getRow(), headers.indexOf("PasswordHash") + 1).setValue(hash);
+    sheet.getRange(e.range.getRow(), headers.indexOf("Salt") + 1).setValue(salt);
+    e.range.setValue("✓ updated just now");
+  } catch (err) {
+    // simple triggers can't show alerts — fail quietly rather than break editing
+  }
+}
+
+/* ================= one-time setup helper ================= */
+
+function addVerifiedDropdown() {
+  var sheet = getAccountSheet("tutor");
+  var colIndex = TUTOR_COLUMNS.indexOf("Verified") + 1;
+  var rule = SpreadsheetApp.newDataValidation().requireValueInList(["Yes", "No"], true).setAllowInvalid(false).build();
+  sheet.getRange(2, colIndex, Math.max(sheet.getMaxRows() - 1, 200), 1).setDataValidation(rule);
+  SpreadsheetApp.getUi().alert("Done. The Verified column now shows a Yes/No dropdown.");
+}
+
 /* ================= crypto helpers ================= */
-/* Apps Script has no bcrypt/scrypt/Argon2, so iterated SHA-256 is
-   used as a lightweight stand-in for a slow hash — meaningfully
-   raises brute-force cost over a single unsalted hash, though it's
-   not as strong as a dedicated password-hashing algorithm. */
 
 function generateSalt() {
   return Utilities.getUuid();
@@ -304,8 +371,7 @@ function generateSalt() {
 function hashPassword(password, salt) {
   var value = String(password) + ":" + String(salt);
   for (var i = 0; i < HASH_ITERATIONS; i++) {
-    var bytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, value);
-    value = bytesToHex(bytes);
+    value = bytesToHex(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, value));
   }
   return value;
 }

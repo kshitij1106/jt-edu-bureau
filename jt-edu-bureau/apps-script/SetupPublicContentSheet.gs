@@ -25,6 +25,16 @@
 function setupPublicContentSheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
 
+  makeTab(ss, "Site Settings", ["Key", "Value"], [
+    ["Tagline", "Delhi NCR - est. tutoring registry"],
+    ["HeroHeadline", "Every tutor on our registry is checked before a class is booked."],
+    ["HeroSubtext", "Create a free account, browse verified tutors, and mark interest in one click - a coordinator follows up directly."],
+    ["LogoURL", ""],
+    ["Phone", "+91 80760 64782"],
+    ["Email", "classesjt@gmail.com"],
+    ["Address", "145, Sant Nagar, East of Kailash, New Delhi 110065"]
+  ]);
+
   makeTab(ss, "Subjects", ["Name", "Description", "Tag", "Active"], [
     ["Mathematics", "Classes 1-12, all major boards.", "Core", "Yes"],
     ["Science", "Physics, Chemistry, Biology combined, Classes 1-10.", "Core", "Yes"],
@@ -71,17 +81,17 @@ function setupPublicContentSheet() {
   ]);
 
   makeTab(ss, "FAQs", ["Question", "Answer", "Active"], [
-    ["How fast will I hear back?", "Most requests get a call from a coordinator within 24 hours with two or three shortlisted tutors to choose from.", "Yes"],
+    ["How fast will I hear back?", "Once you mark interest in a tutor, they can see your details in their dashboard and typically follow up within a day or two.", "Yes"],
     ["Are tutors actually verified?", "Yes - every tutor is reviewed for identification, qualifications and teaching experience before being listed on the registry.", "Yes"],
-    ["What are the fees?", "Fees vary by subject, class and mode. A coordinator will walk you through pricing on your first call, with nothing charged just to browse or submit a request.", "Yes"],
-    ["Do you offer online classes?", "Yes. When you submit a request, choose Online or Either as your preferred mode.", "Yes"],
+    ["What are the fees?", "Rates vary by tutor and are shown on each tutor's profile. There's no charge to browse, register, or mark interest.", "Yes"],
+    ["Do you offer online classes?", "Yes - filter the tutor directory by mode to see tutors offering online classes.", "Yes"],
     ["Which areas do you cover for home visits?", "We're based in East of Kailash and actively cover most of Delhi NCR for home-visit tutoring.", "Yes"],
-    ["How do I apply to teach?", "Use the Become a tutor form with your subjects, qualifications and experience. Our team calls shortlisted applicants for a short verification chat.", "Yes"],
+    ["How do I apply to teach?", "Create a tutor account and fill in your subjects, qualifications and experience. A coordinator reviews it before your profile appears on the public directory.", "Yes"],
     ["Can I switch tutors if it's not a good fit?", "Yes - let your coordinator know and they'll arrange another shortlist at no extra charge.", "Yes"],
-    ["Is my contact information shared with tutors right away?", "No. Your details stay with your coordinator until you approve a specific match.", "Yes"]
+    ["Is my contact information shared with tutors right away?", "Only once you mark interest in a specific tutor - your basic details go to that tutor so they can follow up.", "Yes"]
   ]);
 
-  SpreadsheetApp.getUi().alert("Done. Six content tabs are set up with starter rows you can edit anytime — Subjects, Boards, Exams, Locations, Testimonials and FAQs.");
+  SpreadsheetApp.getUi().alert("Done. Seven tabs are set up with starter rows you can edit anytime — Site Settings, Subjects, Boards, Exams, Locations, Testimonials and FAQs.");
 }
 
 function makeTab(ss, name, headers, rows) {

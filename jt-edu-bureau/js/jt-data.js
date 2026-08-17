@@ -16,14 +16,15 @@
 const JT_CONFIG = {
   // ID of the PUBLIC content Sheet (shared "Anyone with the link – Viewer").
   // From its URL, the long string between /d/ and /edit.
-  SHEET_ID: "1-3sQn5hvWjCx975cXGVXZ1G6gVIAq6usqzLO_xQ9kD4",
+  SHEET_ID: "1E7K-xfSUehVzG5ptUhkyshE4FnwihA_0kevtbQLoL1w",
 
   // The /exec URL from deploying Code.gs as a Web App INSIDE THE
   // PRIVATE leads Sheet (that sheet itself stays un-shared).
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx_2T6iZHUY9rLwXKMve6_ZChBl94Tu7oD2x12jX8rQ6JPi2Fx5OQ3ufIRP28KEhDtV/exec",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxOrZMk5mE4lzz_Ov2gEEQlGhdNs260IP8YRxgUtPzpj09OJNrKbQhSRQIAwJfV7izXaw/exec",
 
   // Tab names — keep these exact names in your Sheet, or edit to match
   TABS: {
+    settings: "Site Settings",
     subjects: "Subjects",
     boards: "Boards",
     exams: "Exams",
@@ -224,6 +225,24 @@ async function jtRequireAuth(expectedRole, loginPage) {
     return null;
   }
   return { token: session.token, profile: res.profile };
+}
+
+/* ---------- Site Settings: editorial control for logo, hero text, contact info ---------- */
+
+let JT_SETTINGS_CACHE = null;
+
+/**
+ * Fetches the "Site Settings" Key/Value tab once and caches it for
+ * this page load. Returns {} if not configured — callers should
+ * always fall back to the hardcoded default when a key is missing.
+ */
+async function jtGetSettings() {
+  if (JT_SETTINGS_CACHE) return JT_SETTINGS_CACHE;
+  const rows = await jtFetchTab("settings", []);
+  const map = {};
+  rows.forEach(r => { if (r.Key) map[r.Key] = r.Value; });
+  JT_SETTINGS_CACHE = map;
+  return map;
 }
 
 /* ---------- Small render helpers shared across pages ---------- */

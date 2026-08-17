@@ -48,13 +48,13 @@ function jtRenderHeader(activePage) {
   <header class="site-header" id="siteHeader">
     <div class="container header-row">
       <a href="index.html" class="brand">
-        <span class="brand-mark" style="color:#16233F">${JT_LOGO_SVG}</span>
-        <span class="brand-name">JT Education Bureau<small>Delhi&nbsp;NCR &middot; est. tutoring registry</small></span>
+        <span class="brand-mark" id="headerLogoMark" style="color:#16233F">${JT_LOGO_SVG}</span>
+        <span class="brand-name">JT Education Bureau<small id="headerTagline">Delhi&nbsp;NCR &middot; est. tutoring registry</small></span>
       </a>
       <nav class="main-nav" aria-label="Primary">${navHtml}</nav>
       <div class="header-cta">
         <a href="${quickLink}" class="btn btn-outline">${quickLabel}</a>
-        <a href="tel:+918076064782" class="btn btn-primary">Call us</a>
+        <a href="tel:+918076064782" class="btn btn-primary" id="headerCallLink">Call us</a>
         <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
           <svg width="18" height="18" viewBox="0 0 18 18"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </button>
@@ -70,6 +70,7 @@ function jtRenderHeader(activePage) {
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
     });
   }
+  jtApplySettings();
 }
 
 function jtRenderFooter() {
@@ -82,7 +83,7 @@ function jtRenderFooter() {
       <div class="footer-grid">
         <div>
           <div class="footer-brand">
-            <span class="brand-mark" style="color:#FBF8F1">${JT_LOGO_SVG}</span>
+            <span class="brand-mark" id="footerLogoMark" style="color:#FBF8F1">${JT_LOGO_SVG}</span>
             <strong style="font-family:var(--font-display); font-size:1.05rem;">JT Education Bureau</strong>
           </div>
           <p>A tutor registry connecting students and verified tutors across Delhi&nbsp;NCR, for school subjects, boards and competitive exams.</p>
@@ -110,9 +111,9 @@ function jtRenderFooter() {
         <div>
           <h5>Registry office</h5>
           <ul>
-            <li>145, Sant Nagar<br>East of Kailash<br>New&nbsp;Delhi&nbsp;110065</li>
-            <li><a href="mailto:classesjt@gmail.com">classesjt@gmail.com</a></li>
-            <li><a href="tel:+918076064782">+91&nbsp;80760&nbsp;64782</a></li>
+            <li id="footerAddress">145, Sant Nagar<br>East of Kailash<br>New&nbsp;Delhi&nbsp;110065</li>
+            <li><a href="mailto:classesjt@gmail.com" id="footerEmailLink">classesjt@gmail.com</a></li>
+            <li><a href="tel:+918076064782" id="footerPhoneLink">+91&nbsp;80760&nbsp;64782</a></li>
           </ul>
         </div>
       </div>
@@ -122,6 +123,40 @@ function jtRenderFooter() {
       </div>
     </div>
   </footer>`;
+  jtApplySettings();
+}
+
+/**
+ * Progressive enhancement: header/footer already rendered with sane
+ * hardcoded defaults above, so the page never looks broken. This
+ * patches in values from the "Site Settings" sheet tab where set,
+ * without blocking the initial render.
+ */
+async function jtApplySettings() {
+  const settings = await jtGetSettings();
+  if (!settings || !Object.keys(settings).length) return;
+
+  if (settings.Tagline) {
+    document.querySelectorAll("#headerTagline").forEach(el => el.textContent = settings.Tagline);
+  }
+  if (settings.LogoURL) {
+    const imgHtml = `<img src="${jtNormalizeImageUrl(settings.LogoURL)}" alt="JT Education Bureau" style="width:100%; height:100%; object-fit:contain;">`;
+    document.querySelectorAll("#headerLogoMark, #footerLogoMark").forEach(el => el.innerHTML = imgHtml);
+  }
+  if (settings.Phone) {
+    const telHref = "tel:+91" + settings.Phone.replace(/\D/g, "").slice(-10);
+    document.querySelectorAll("#headerCallLink, #footerPhoneLink").forEach(el => { el.href = telHref; });
+    const phoneLink = document.getElementById("footerPhoneLink");
+    if (phoneLink) phoneLink.textContent = settings.Phone;
+  }
+  if (settings.Email) {
+    const emailLink = document.getElementById("footerEmailLink");
+    if (emailLink) { emailLink.href = "mailto:" + settings.Email; emailLink.textContent = settings.Email; }
+  }
+  if (settings.Address) {
+    const addr = document.getElementById("footerAddress");
+    if (addr) addr.innerHTML = settings.Address.split(",").map(s => s.trim()).join("<br>");
+  }
 }
 
 /* ---------- FAQ accordion (used on any page with .faq-item) ---------- */

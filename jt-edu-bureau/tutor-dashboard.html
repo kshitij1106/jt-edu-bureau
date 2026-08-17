@@ -29,7 +29,7 @@
   </section>
 
   <section class="section" style="padding-top:16px;">
-    <div class="container" style="max-width:640px;">
+    <div class="container dash-grid" style="max-width:900px;">
       <div class="form-panel">
         <span class="form-no">TUTOR PROFILE</span>
         <h3 style="margin-top:6px;">Your listing</h3>
@@ -118,6 +118,15 @@
           <button type="submit" class="btn btn-primary btn-block">Save profile</button>
           <span id="profileSaved" style="font-size:0.82rem; color:var(--success); display:block; text-align:center; margin-top:10px;"></span>
         </form>
+      </div>
+
+      <div>
+        <div class="form-panel" style="text-align:center; margin-bottom:20px;">
+          <span class="stat-num" id="interestCount" style="font-size:2.4rem;">—</span>
+          <span class="stat-label" style="display:block; margin-top:4px;">Students interested</span>
+        </div>
+        <h3 style="margin-bottom:14px; font-size:1.05rem;">Recent interest</h3>
+        <div id="interestList"><p class="portal-loading">Loading…</p></div>
       </div>
     </div>
   </section>
@@ -230,6 +239,36 @@
     location.href = "become-a-tutor.html";
   });
 
+  function statusPill(status) {
+    const s = (status || "New").toLowerCase();
+    const cls = s === "matched" ? "pill-verified" : s === "closed" ? "pill-rejected" : "pill-pending";
+    return `<span class="pill ${cls}"><span class="dot"></span>${status || "New"}</span>`;
+  }
+
+  async function loadInterests() {
+    const res = await jtApiCall("getTutorInterests", { token: SESSION.token });
+    const list = document.getElementById("interestList");
+    const count = document.getElementById("interestCount");
+    if (!res.ok) { list.innerHTML = ""; count.textContent = "—"; return; }
+    count.textContent = res.interests.length;
+    if (!res.interests.length) {
+      list.innerHTML = `<p style="color:var(--ink-soft); font-size:0.86rem;">No one yet — once your profile is verified and live, interested students will show up here.</p>`;
+      return;
+    }
+    list.innerHTML = res.interests.map(r => `
+      <div class="history-item">
+        <div>
+          <h4>${r.StudentName || "Student"}</h4>
+          <div class="meta">${[r.StudentClass, r.StudentBoard, r.StudentLocality].filter(Boolean).join(" · ")}</div>
+          <div class="meta" style="margin-top:4px;"><a href="tel:+91${r.StudentPhone}">${r.StudentPhone}</a></div>
+        </div>
+        <div style="text-align:right;">
+          ${statusPill(r.Status)}
+          <div class="when">${r.Timestamp ? new Date(r.Timestamp).toLocaleDateString() : ""}</div>
+        </div>
+      </div>`).join("");
+  }
+
   (async () => {
     const auth = await jtRequireAuth("tutor", "become-a-tutor.html");
     if (!auth) return;
@@ -237,6 +276,7 @@
     fillForm(auth.profile);
     document.getElementById("loadingScreen").style.display = "none";
     document.getElementById("app").style.display = "";
+    loadInterests();
   })();
 </script>
 </body>

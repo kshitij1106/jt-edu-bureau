@@ -21,8 +21,8 @@
     <div class="container hero-grid">
       <div>
         <span class="eyebrow" style="color:#C1932F">JT Education Bureau &middot; Delhi NCR</span>
-        <h1>Every tutor on our registry is checked before a class is booked.</h1>
-        <p class="lede">Tell us the subject, board or exam, and the class — our coordinators shortlist verified tutors from across Delhi NCR, usually within a day. Home visits or online, your choice.</p>
+        <h1 id="heroHeadline">Every tutor on our registry is checked before a class is booked.</h1>
+        <p class="lede" id="heroSubtext">Create a free account, browse verified tutors, and mark interest in one click — a coordinator follows up directly.</p>
         <div class="hero-ctas">
           <a href="find-a-tutor.html" class="btn btn-brass">Request a tutor</a>
           <a href="become-a-tutor.html" class="btn btn-outline">Apply to teach with us</a>
@@ -66,18 +66,18 @@
       <div class="steps">
         <div class="step">
           <span class="step-no">01</span>
-          <h3>Tell us what you need</h3>
-          <p>Subject, class or exam, board, preferred locality and schedule — a two-minute form, no account required.</p>
+          <h3>Create a free account</h3>
+          <p>Name, class, board and locality — saved once, so browsing and marking interest takes no retyping.</p>
         </div>
         <div class="step">
           <span class="step-no">02</span>
-          <h3>We shortlist verified tutors</h3>
-          <p>A coordinator checks credentials and experience and calls you with two or three matches, usually within 24 hours.</p>
+          <h3>Browse and mark interest</h3>
+          <p>Filter verified tutors by subject, region or mode, then click "I'm interested" — one tap, no form.</p>
         </div>
         <div class="step">
           <span class="step-no">03</span>
-          <h3>Choose and begin</h3>
-          <p>Pick a tutor, confirm the schedule, and start — at home or online, on your terms.</p>
+          <h3>They follow up</h3>
+          <p>The tutor sees your details in their dashboard and reaches out directly to arrange classes.</p>
         </div>
       </div>
     </div>
@@ -154,12 +154,16 @@
   ];
   const FALLBACK_TESTIMONIALS = [];
   const FALLBACK_FAQS = [
-    { Question: "How fast will I hear back?", Answer: "Most requests get a call from a coordinator within 24 hours with two or three shortlisted tutors to choose from." },
+    { Question: "How fast will I hear back?", Answer: "Once you mark interest in a tutor, they can see your details in their dashboard and typically follow up within a day or two." },
     { Question: "Are tutors actually verified?", Answer: "Yes — every tutor is reviewed for identification, qualifications and teaching experience before being listed on the registry." },
     { Question: "What are the fees?", Answer: "Fees vary by subject, class and mode. A coordinator will walk you through pricing on your first call, with nothing charged just to browse." }
   ];
 
   (async () => {
+    const settings = await jtGetSettings();
+    if (settings.HeroHeadline) document.getElementById("heroHeadline").textContent = settings.HeroHeadline;
+    if (settings.HeroSubtext) document.getElementById("heroSubtext").textContent = settings.HeroSubtext;
+
     const sheetConfigured = JT_CONFIG.SHEET_ID && !JT_CONFIG.SHEET_ID.startsWith("PASTE_");
     const stats = await jtFetchLeadStats();
     if (sheetConfigured || stats) {

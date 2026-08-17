@@ -9,17 +9,16 @@ var CONTACT_COLUMNS = ["Timestamp", "Name", "Contact", "Message", "Status"];
 function doPost(e) {
   try {
     var body = JSON.parse(e.postData.contents);
-    var action = body.action || body.type; // supports old "type" callers too
-
-    switch (action) {
+    switch (body.action) {
       case "contact": return handleContact(body.data || {});
       case "register": return handleRegister(body);
       case "login": return handleLogin(body);
       case "logout": return handleLogout(body);
       case "getProfile": return handleGetProfile(body);
       case "updateProfile": return handleUpdateProfile(body);
-      case "submitRequest": return handleSubmitRequest(body);
-      case "getMyRequests": return handleGetMyRequests(body);
+      case "markInterested": return handleMarkInterested(body);
+      case "getMyInterests": return handleGetMyInterests(body);
+      case "getTutorInterests": return handleGetTutorInterests(body);
       case "uploadPhoto": return handleUploadPhoto(body);
       default: return jsonResponse({ ok: false, reason: "unknown_action" });
     }
@@ -36,18 +35,16 @@ function doGet(e) {
 }
 
 function handleContact(data) {
-  var sheet = getOrCreateSheet("Leads - Contact", CONTACT_COLUMNS);
+  var sheet = getOrCreateSheet("Contact Messages", CONTACT_COLUMNS);
   sheet.appendRow([new Date(), data.Name || "", data.Contact || "", data.Message || "", "New"]);
   return jsonResponse({ ok: true });
 }
 
-/**
- * Aggregate counts only — never row contents. Safe to expose publicly.
- */
+/** Aggregate counts only — never row contents. Safe to expose publicly. */
 function getStats() {
   var tutorSheet = getAccountSheet("tutor");
   var studentSheet = getAccountSheet("student");
-  var requestsSheet = getOrCreateSheet("Requests", REQUEST_COLUMNS);
+  var interestsSheet = getOrCreateSheet("Interests", INTEREST_COLUMNS);
 
   var tutorData = tutorSheet.getDataRange().getValues();
   var verifiedIdx = tutorData[0].indexOf("Verified");
@@ -60,7 +57,7 @@ function getStats() {
     ok: true,
     verifiedTutors: verifiedCount,
     registeredStudents: Math.max(studentSheet.getLastRow() - 1, 0),
-    studentRequests: Math.max(requestsSheet.getLastRow() - 1, 0)
+    totalInterests: Math.max(interestsSheet.getLastRow() - 1, 0)
   };
 }
 
