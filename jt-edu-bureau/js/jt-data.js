@@ -223,8 +223,9 @@ async function jtRequireAuth(expectedRole, loginPage) {
   }
 
   let res = await jtApiCall("getProfile", { token: session.token });
-  if (!res.ok) {
-    await new Promise(r => setTimeout(r, 900));
+  for (const delay of [600, 1200, 2000]) {
+    if (res.ok) break;
+    await new Promise(r => setTimeout(r, delay));
     res = await jtApiCall("getProfile", { token: session.token });
   }
 

@@ -28,7 +28,7 @@ function setupPublicContentSheet() {
   makeTab(ss, "Site Settings", ["Key", "Value"], [
     ["Tagline", "Delhi NCR - est. tutoring registry"],
     ["HeroHeadline", "Every tutor on our registry is checked before a class is booked."],
-    ["HeroSubtext", "Create a free account, browse verified tutors, and mark interest in one click - a coordinator follows up directly."],
+    ["HeroSubtext", "Create a free account, browse verified tutors, and connect directly with the ones that fit."],
     ["LogoURL", ""],
     ["Phone", "+91 80760 64782"],
     ["Email", "classesjt@gmail.com"],

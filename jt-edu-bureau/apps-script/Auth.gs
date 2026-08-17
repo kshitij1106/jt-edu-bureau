@@ -63,6 +63,7 @@ function handleRegister(body) {
   }
 
   var token = createSession(phone, role);
+  SpreadsheetApp.flush();
   return jsonResponse({ ok: true, token: token, role: role });
 }
 
@@ -133,6 +134,7 @@ function handleUpdateProfile(body) {
     }
   });
 
+  SpreadsheetApp.flush();
   return jsonResponse({ ok: true });
 }
 
@@ -166,6 +168,7 @@ function handleMarkInterested(body) {
     studentProfile.Class || "", studentProfile.Board || "", studentProfile.Locality || "",
     tutorPhone, tutorProfile.Name || "", "New"
   ]);
+  SpreadsheetApp.flush();
   return jsonResponse({ ok: true });
 }
 
@@ -223,6 +226,7 @@ function handleUploadPhoto(body) {
   var sheet = getAccountSheet("tutor");
   var found = findRowByPhone(sheet, session.phone);
   if (found) sheet.getRange(found.row, TUTOR_COLUMNS.indexOf("Photo") + 1).setValue(url);
+  SpreadsheetApp.flush();
 
   return jsonResponse({ ok: true, url: url });
 }
@@ -269,6 +273,7 @@ function createSession(phone, role) {
   var token = Utilities.getUuid() + Utilities.getUuid();
   var expires = new Date(Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000);
   sheet.appendRow([token, phone, role, expires]);
+  SpreadsheetApp.flush();
   return token;
 }
 
