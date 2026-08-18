@@ -298,7 +298,9 @@ function getSession(token) {
   for (var i = 1; i < data.length; i++) {
     if (data[i][0] === token) {
       if (new Date(data[i][3]) < new Date()) return null;
-      return { phone: data[i][1], role: data[i][2] };
+      // normalized here, once, so every caller downstream gets a
+      // consistent string regardless of how Sheets typed the cell
+      return { phone: normalizePhone(data[i][1]), role: data[i][2] };
     }
   }
   return null;
@@ -317,9 +319,10 @@ function getAccountSheet(role) {
 }
 
 function findRowByPhone(sheet, phone) {
+  var target = normalizePhone(phone);
   var data = sheet.getDataRange().getValues();
   for (var i = 1; i < data.length; i++) {
-    if (normalizePhone(String(data[i][0])) === phone) return { row: i + 1, values: data[i] };
+    if (normalizePhone(data[i][0]) === target) return { row: i + 1, values: data[i] };
   }
   return null;
 }
