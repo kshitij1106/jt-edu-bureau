@@ -25,7 +25,7 @@ var TUTOR_EDITABLE = [
 var INTEREST_COLUMNS = ["Timestamp", "StudentPhone", "StudentName", "StudentClass", "StudentBoard", "StudentLocality", "TutorPhone", "TutorName", "Status"];
 var SESSION_COLUMNS = ["Token", "Phone", "Role", "ExpiresAt"];
 
-var MAX_PHOTO_BYTES = 1024 * 1024; // 1MB
+var MAX_PHOTO_DATA_URL_CHARS = 45000; // stays comfortably under a Sheets cell's ~50,000-char limit
 var SESSION_DAYS = 30;
 var HASH_ITERATIONS = 8000;
 var MAX_LOGIN_ATTEMPTS = 5;
@@ -224,36 +224,32 @@ function handleGetTutorInterests(body) {
 
 /* ================= tutor photo upload ================= */
 
+/**
+ * Stores the photo directly as a data URL in the Photo cell —
+ * deliberately not a Drive share-link. Two different Drive hotlink
+ * URL schemes both proved unreliable for freshly-uploaded files, and
+ * a data URL removes that entire dependency: the image renders from
+ * the cell's own value, no external request, no sharing permissions,
+ * nothing that can silently fail. The client resizes/compresses the
+ * photo before sending, since Sheets caps a cell around 50,000
+ * characters.
+ */
 function handleUploadPhoto(body) {
   var session = requireSession(body);
   if (!session || session.role !== "tutor") return jsonResponse({ ok: false, reason: "unauthorized" });
 
-  var bytes = Utilities.base64Decode(body.photoBase64 || "");
-  if (bytes.length > MAX_PHOTO_BYTES) return jsonResponse({ ok: false, reason: "file_too_large" });
+  var base64 = body.photoBase64 || "";
+  if (!base64) return jsonResponse({ ok: false, reason: "no_photo" });
+  if (base64.length > 45000) return jsonResponse({ ok: false, reason: "file_too_large" });
 
-  var folder = getOrCreatePhotoFolder();
-  var blob = Utilities.newBlob(bytes, body.mimeType || "image/jpeg", session.phone + "-" + Date.now());
-  var file = folder.createFile(blob);
-  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-  var url = "https://drive.google.com/uc?export=view&id=" + file.getId();
+  var dataUrl = "data:" + (body.mimeType || "image/jpeg") + ";base64," + base64;
 
   var sheet = getAccountSheet("tutor");
   var found = findRowByPhone(sheet, session.phone);
-  if (found) sheet.getRange(found.row, TUTOR_COLUMNS.indexOf("Photo") + 1).setValue(url);
+  if (found) sheet.getRange(found.row, TUTOR_COLUMNS.indexOf("Photo") + 1).setValue(dataUrl);
   SpreadsheetApp.flush();
 
-  return jsonResponse({ ok: true, url: url });
-}
-
-function getOrCreatePhotoFolder() {
-  var props = PropertiesService.getScriptProperties();
-  var id = props.getProperty("PHOTO_FOLDER_ID");
-  if (id) {
-    try { return DriveApp.getFolderById(id); } catch (err) { /* fall through and recreate */ }
-  }
-  var folder = DriveApp.createFolder("JT Tutor Photos");
-  props.setProperty("PHOTO_FOLDER_ID", folder.getId());
-  return folder;
+  return jsonResponse({ ok: true, url: dataUrl });
 }
 
 /* ================= public tutor directory ================= */
