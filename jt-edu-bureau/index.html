@@ -38,8 +38,7 @@
           </div>
           <div class="stats-row" id="statsRow">
             <div class="stat-block"><span class="stat-num" id="statTutors">—</span><span class="stat-label">Verified tutors</span></div>
-            <div class="stat-block"><span class="stat-num" id="statRequests">—</span><span class="stat-label">Requests received</span></div>
-            <div class="stat-block"><span class="stat-num" id="statSubjects">—</span><span class="stat-label">Subjects covered</span></div>
+            <div class="stat-block"><span class="stat-num" id="statRequests">—</span><span class="stat-label">Registered students</span></div>
           </div>
           <p class="stats-empty" id="statsEmpty" style="display:none;">Live counts will appear here once your Sheets are connected.</p>
           <span class="registry-status" id="statsStatus"><span class="dot"></span> Updated live from our registry</span>
@@ -50,10 +49,9 @@
 
   <section class="trust-strip">
     <div class="container trust-row">
-      <div class="trust-item"><strong>Delhi&nbsp;NCR</strong>&nbsp;registry</div>
       <div class="trust-item">Tutors <strong>reviewed</strong> before listing</div>
       <div class="trust-item"><strong>Home</strong>&nbsp;&amp;&nbsp;<strong>online</strong> classes</div>
-      <div class="trust-item">A real coordinator, <strong>not an algorithm</strong></div>
+      <div class="trust-item"><strong>Career counselling</strong> available</div>
     </div>
   </section>
 
@@ -166,15 +164,10 @@
 
     const sheetConfigured = JT_CONFIG.SHEET_ID && !JT_CONFIG.SHEET_ID.startsWith("PASTE_");
     const stats = await jtFetchLeadStats();
-    if (sheetConfigured || stats) {
-      const subjectsForStats = sheetConfigured ? await jtFetchTab("subjects", []) : [];
-      document.getElementById("statTutors").textContent = stats ? stats.verifiedTutors : "—";
-      document.getElementById("statSubjects").textContent = sheetConfigured ? subjectsForStats.length : "—";
-      document.getElementById("statRequests").textContent = stats ? stats.studentRequests : "—";
-      if (!stats) {
-        document.getElementById("statsStatus").className = "registry-status dim";
-        document.getElementById("statsStatus").innerHTML = `<span class="dot"></span> Public Sheet connected, account system not yet set up`;
-      } else if (!sheetConfigured) {
+    if (stats) {
+      document.getElementById("statTutors").textContent = stats.verifiedTutors;
+      document.getElementById("statRequests").textContent = stats.registeredStudents;
+      if (!sheetConfigured) {
         document.getElementById("statsStatus").className = "registry-status dim";
         document.getElementById("statsStatus").innerHTML = `<span class="dot"></span> Account system connected, public Sheet not yet set up`;
       }

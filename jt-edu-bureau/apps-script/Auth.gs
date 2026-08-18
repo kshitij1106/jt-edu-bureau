@@ -111,7 +111,21 @@ function handleGetProfile(body) {
   if (!session) return jsonResponse({ ok: false, reason: "unauthorized" });
   var sheet = getAccountSheet(session.role);
   var found = findRowByPhone(sheet, session.phone);
-  if (!found) return jsonResponse({ ok: false, reason: "not_found" });
+  if (!found) {
+    return jsonResponse({
+      ok: false,
+      reason: "not_found",
+      debug: {
+        sessionPhone: session.phone,
+        sessionRole: session.role,
+        sheetName: sheet.getName(),
+        rowsInSheet: Math.max(sheet.getLastRow() - 1, 0),
+        firstFewPhones: sheet.getLastRow() > 1
+          ? sheet.getRange(2, 1, Math.min(sheet.getLastRow() - 1, 5), 1).getValues().map(function (r) { return String(r[0]); })
+          : []
+      }
+    });
+  }
   return jsonResponse({ ok: true, profile: rowToProfile(session.role, found.values) });
 }
 

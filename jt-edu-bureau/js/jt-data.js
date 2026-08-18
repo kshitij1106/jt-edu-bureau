@@ -230,7 +230,7 @@ async function jtRequireAuth(expectedRole, loginPage) {
   }
 
   if (!res.ok) {
-    return { token: session.token, profile: null, error: res.reason || "unknown" };
+    return { token: session.token, profile: null, error: res.reason || "unknown", debug: res.debug };
   }
   return { token: session.token, profile: res.profile };
 }
