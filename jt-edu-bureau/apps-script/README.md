@@ -25,8 +25,8 @@ Never shared, never touched except the two things noted below.
 2. **Extensions → Apps Script** → paste `Code.gs`.
 3. Add a second file named `Auth` → paste `Auth.gs`.
 4. **Deploy → New deployment → Web app** → Execute as **Me** → Who
-   has access **Anyone** → **Deploy** → approve permissions (it'll
-   ask for Drive access too, for tutor photos).
+   has access **Anyone** → **Deploy** → approve the permissions it
+   asks for.
 5. Copy the `/exec` URL → paste into `APPS_SCRIPT_URL` in
    `/js/jt-data.js`.
 

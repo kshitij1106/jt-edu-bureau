@@ -50,7 +50,7 @@
             <div>
               <div class="file-field" style="text-align:left; padding:10px 14px;">
                 <input type="file" id="rPhoto" accept="image/*">
-                <span style="font-size:0.76rem;">JPG or PNG, up to 1MB. Optional — can add later.</span>
+                <span style="font-size:0.76rem;">JPG or PNG. Resized automatically.</span>
               </div>
               <p id="photoStatus" style="font-size:0.78rem; color:var(--ink-soft); margin:6px 0 0;"></p>
             </div>
@@ -202,26 +202,24 @@
     }
   });
 
-  // photo preview only (actual upload happens after account creation)
-  let pendingPhotoFile = null;
-  document.getElementById("rPhoto").addEventListener("change", (e) => {
+  // photo is resized client-side immediately; upload happens after account creation
+  let pendingPhotoDataUrl = null;
+  document.getElementById("rPhoto").addEventListener("change", async (e) => {
     const file = e.target.files[0];
     const statusEl = document.getElementById("photoStatus");
     if (!file) return;
-    if (file.size > 1024 * 1024) {
-      statusEl.textContent = "That file is over 1MB — please choose a smaller image.";
-      statusEl.style.color = "var(--stamp)";
-      e.target.value = ""; pendingPhotoFile = null;
-      return;
-    }
-    pendingPhotoFile = file;
-    statusEl.textContent = "Ready to upload once your account is created.";
+    statusEl.textContent = "Processing…";
     statusEl.style.color = "var(--ink-soft)";
-    const reader = new FileReader();
-    reader.onload = () => {
-      document.getElementById("photoPreview").innerHTML = `<img src="${reader.result}" alt="" style="width:100%;height:100%;object-fit:cover;">`;
-    };
-    reader.readAsDataURL(file);
+    try {
+      pendingPhotoDataUrl = await jtResizeImageToDataUrl(file);
+      document.getElementById("photoPreview").innerHTML = `<img src="${pendingPhotoDataUrl}" alt="" style="width:100%;height:100%;object-fit:cover;">`;
+      statusEl.textContent = "Ready — uploads once your account is created.";
+      statusEl.style.color = "var(--ink-soft)";
+    } catch (err) {
+      statusEl.textContent = "Couldn't process that image — please try a different file.";
+      statusEl.style.color = "var(--stamp)";
+      pendingPhotoDataUrl = null;
+    }
   });
 
   registerForm.addEventListener("submit", async (e) => {
@@ -256,14 +254,10 @@
 
     jtSaveSession(res.token, "tutor");
 
-    if (pendingPhotoFile) {
+    if (pendingPhotoDataUrl) {
       btn.textContent = "Uploading photo…";
-      const base64 = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result.split(",")[1]);
-        reader.readAsDataURL(pendingPhotoFile);
-      });
-      await jtApiCall("uploadPhoto", { token: res.token, photoBase64: base64, mimeType: pendingPhotoFile.type });
+      const base64 = pendingPhotoDataUrl.split(",")[1];
+      await jtApiCall("uploadPhoto", { token: res.token, photoBase64: base64, mimeType: "image/jpeg" });
     }
 
     location.href = "tutor-dashboard.html";

@@ -36,7 +36,8 @@ full map — it's short on purpose.
 - **Student dashboard:** browse tutors, mark interest in one click
   (uses saved profile — no retyping), see status of past interests.
 - **Tutor dashboard:** self-service profile — rate, description,
-  subjects, location, a photo (1MB, stored in Drive) — plus a live
+  subjects, location, a photo (resized and stored directly, no
+  external dependency) — plus a live
   count and list of interested students with enough detail to follow
   up. New accounts start unverified and invisible publicly until
   approved.
