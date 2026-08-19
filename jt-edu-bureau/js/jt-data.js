@@ -256,24 +256,41 @@ async function jtGetSettings() {
 /* ---------- Image resize before upload ---------- */
 
 /**
- * Downscales an image file to a small JPEG data URL client-side.
- * Photos are stored directly in the Sheet (see apps-script/Auth.gs),
- * so they need to be small — this also means no original-file-size
- * limit is needed; any photo works, it's compressed regardless.
+ * Downscales an image file to a JPEG data URL small enough for a
+ * single Sheets cell (Auth.gs stores it directly, no Drive
+ * involved). A single fixed size/quality isn't reliable — a
+ * detailed real photo compresses far worse than a simple graphic —
+ * so this tries progressively smaller settings until the result
+ * actually fits, rather than guessing once.
  */
-function jtResizeImageToDataUrl(file, maxDim = 480, quality = 0.82) {
+function jtResizeImageToDataUrl(file, targetMaxChars = 40000) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        let { width, height } = img;
-        if (width > height && width > maxDim) { height = Math.round(height * (maxDim / width)); width = maxDim; }
-        else if (height >= width && height > maxDim) { width = Math.round(width * (maxDim / height)); height = maxDim; }
-        const canvas = document.createElement("canvas");
-        canvas.width = width; canvas.height = height;
-        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL("image/jpeg", quality));
+        function renderAt(maxDim, quality) {
+          let width = img.naturalWidth, height = img.naturalHeight;
+          if (width >= height) {
+            if (width > maxDim) { height = Math.round(height * (maxDim / width)); width = maxDim; }
+          } else if (height > maxDim) {
+            width = Math.round(width * (maxDim / height)); height = maxDim;
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width; canvas.height = height;
+          canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+          return canvas.toDataURL("image/jpeg", quality);
+        }
+
+        const attempts = [
+          [340, 0.82], [280, 0.75], [230, 0.7], [190, 0.65], [150, 0.6], [120, 0.55], [96, 0.5]
+        ];
+        let result = renderAt(attempts[0][0], attempts[0][1]);
+        for (const [dim, quality] of attempts) {
+          result = renderAt(dim, quality);
+          if (result.length <= targetMaxChars) break;
+        }
+        resolve(result);
       };
       img.onerror = () => reject(new Error("Couldn't read that image."));
       img.src = e.target.result;

@@ -195,7 +195,13 @@ function setAvatarImage(el, url, name) {
         statusEl.textContent = "Photo updated.";
         statusEl.style.color = "var(--success)";
       } else {
-        statusEl.textContent = res.reason === "file_too_large" ? "That image is still too large after resizing — try a simpler photo." : "Upload failed — please try again.";
+        const reasons = {
+          file_too_large: "That image is still too large after resizing — try a simpler photo.",
+          unauthorized: "Your session seems to have expired — please log out and back in.",
+          not_found: "Couldn't find your account row — try logging out and back in.",
+          no_photo: "No image data was received — please try again."
+        };
+        statusEl.textContent = (reasons[res.reason] || `Upload failed (${res.reason || "unknown reason"}) — please try again.`);
         statusEl.style.color = "var(--stamp)";
       }
     } catch (err) {
