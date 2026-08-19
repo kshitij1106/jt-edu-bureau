@@ -8,7 +8,7 @@
 <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -212,8 +212,9 @@
     statusEl.style.color = "var(--ink-soft)";
     try {
       pendingPhotoDataUrl = await jtResizeImageToDataUrl(file);
+      const kb = Math.round(pendingPhotoDataUrl.split(",")[1].length * 0.75 / 1024);
       document.getElementById("photoPreview").innerHTML = `<img src="${pendingPhotoDataUrl}" alt="" style="width:100%;height:100%;object-fit:cover;">`;
-      statusEl.textContent = "Ready — uploads once your account is created.";
+      statusEl.textContent = `Compressed to ${kb}KB — uploads once your account is created.`;
       statusEl.style.color = "var(--ink-soft)";
     } catch (err) {
       statusEl.textContent = "Couldn't process that image — please try a different file.";

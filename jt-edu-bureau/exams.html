@@ -8,7 +8,7 @@
 <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -53,7 +53,7 @@
   jtRenderHeader("how-it-works.html");
   jtRenderFooter();
 
-  const FALLBACK = [{"Name": "JEE Main & Advanced", "Description": "Engineering entrance, Classes 11\u201312 and droppers.", "Tag": "Competitive"}, {"Name": "NEET", "Description": "Medical entrance, Classes 11\u201312 and droppers.", "Tag": "Competitive"}, {"Name": "Foundation (8\u201310)", "Description": "Early groundwork for JEE / NEET aspirants.", "Tag": "Foundation"}, {"Name": "CUET", "Description": "Common University Entrance Test.", "Tag": "Competitive"}, {"Name": "Olympiads", "Description": "Maths, Science and English olympiad prep.", "Tag": "Foundation"}];
+  const FALLBACK = [{"Name": "JEE Main & Advanced", "Description": "Engineering entrance, Classes 11\u201312 and droppers.", "Tag": "Competitive"}, {"Name": "NEET", "Description": "Medical entrance, Classes 11\u201312 and droppers.", "Tag": "Competitive"}, {"Name": "BITSAT", "Description": "Undergraduate admissions, BITS Pilani.", "Tag": "Competitive"}, {"Name": "CUET", "Description": "Common University Entrance Test.", "Tag": "Competitive"}, {"Name": "Olympiads", "Description": "Maths, Science and English olympiad prep.", "Tag": "Foundation"}, {"Name": "NDA", "Description": "Defence entrance for Army, Navy and Air Force.", "Tag": "Competitive"}, {"Name": "SAT", "Description": "Undergraduate admissions test, India and abroad.", "Tag": "Study abroad"}, {"Name": "Foundation (8\u201310)", "Description": "Early groundwork for JEE / NEET aspirants.", "Tag": "Foundation"}];
 
   (async () => {
     const rows = await jtFetchTab("exams", FALLBACK);

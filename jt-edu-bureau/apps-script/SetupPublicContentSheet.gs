@@ -26,7 +26,7 @@ function setupPublicContentSheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
 
   makeTab(ss, "Site Settings", ["Key", "Value"], [
-    ["Tagline", "Delhi NCR - est. tutoring registry"],
+    ["Tagline", "Building Minds, Shaping Futures."],
     ["HeroHeadline", "Every tutor on our registry is checked before a class is booked."],
     ["HeroSubtext", "Create a free account, browse verified tutors, and connect directly with the ones that fit."],
     ["LogoURL", ""],
@@ -61,9 +61,12 @@ function setupPublicContentSheet() {
   makeTab(ss, "Exams", ["Name", "Description", "Tag", "Active"], [
     ["JEE Main & Advanced", "Engineering entrance, Classes 11-12 and droppers.", "Competitive", "Yes"],
     ["NEET", "Medical entrance, Classes 11-12 and droppers.", "Competitive", "Yes"],
-    ["Foundation (8-10)", "Early groundwork for JEE / NEET aspirants.", "Foundation", "Yes"],
+    ["BITSAT", "Undergraduate admissions, BITS Pilani.", "Competitive", "Yes"],
     ["CUET", "Common University Entrance Test.", "Competitive", "Yes"],
-    ["Olympiads", "Maths, Science and English olympiad prep.", "Foundation", "Yes"]
+    ["Olympiads", "Maths, Science and English olympiad prep.", "Foundation", "Yes"],
+    ["NDA", "Defence entrance for Army, Navy and Air Force.", "Competitive", "Yes"],
+    ["SAT", "Undergraduate admissions test, India and abroad.", "Study abroad", "Yes"],
+    ["Foundation (8-10)", "Early groundwork for JEE / NEET aspirants.", "Foundation", "Yes"]
   ]);
 
   makeTab(ss, "Locations", ["Name", "Description", "Tag", "Active"], [

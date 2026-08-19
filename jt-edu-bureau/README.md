@@ -1,6 +1,7 @@
 # JT Education Bureau — website
 
-A free website for JT Education Bureau Private Limited. Plain
+A free website for JT Education Network Pvt Ltd (brand name: "JT
+Education Bureau"). Plain
 HTML/CSS/JS (no build step), real accounts for students and tutors,
 a public tutor directory, and editorial control over text/logo/
 contact info — all driven by two Google Sheets, hosted free on
@@ -16,17 +17,22 @@ full map — it's short on purpose.
 
 ## What's built
 
-- **Pages:** Home, Browse tutors, How JT works, About, Subjects,
-  Boards, Exams, Locations, FAQs, Contact, student/tutor login +
-  dashboards, 404.
-- **Design system:** one file, `css/styles.css` — a custom "registry/
-  bureau" look (ledger lines, admit-card styling, the circular seal).
-- **Logo:** `assets/logo-mark.svg`, the JT-as-π seal, vector.
+- **Pages (linked in nav/footer):** Home, Find a tutor, Become a
+  tutor, Browse tutors, About, Contact, student/tutor dashboards, 404.
+  A few pages still exist on disk but are deliberately unlinked for
+  now — Exams, How JT works, Subjects, Boards, Locations, FAQs —
+  content still fetches from the Sheet where relevant, just not
+  surfaced in navigation. Easy to re-link later if wanted.
+- **Design system:** one file, `css/styles.css` — a "registry/bureau"
+  look (ledger lines, admit-card styling) with a simple bordered "JT"
+  badge mark.
+- **Logo:** `assets/logo-mark.svg`, vector, works on light or dark.
 - **Editorial control (Site Settings tab):** hero headline, hero
   subtext, tagline, logo, phone, email, address — change a cell,
   it updates on the live site, everywhere that field appears.
 - **Content control (Subjects/Boards/Exams/Locations/Testimonials/
-  FAQs tabs):** same pattern — edit a Sheet, the site updates.
+  FAQs tabs):** same pattern — edit a Sheet, the site updates. The
+  homepage now features Exams specifically.
 - **Real accounts, phone + password:** salted, hashed 8,000×, never
   stored in plain text — including for you. To help someone who's
   locked out, type a new password into the "Reset Password" column
@@ -44,11 +50,13 @@ full map — it's short on purpose.
 - **Public tutor directory (`tutors.html`):** filterable, swipeable
   carousel, sourced live from verified accounts via an API that only
   ever returns public-safe fields.
-- **Live registry count:** homepage hero shows real numbers, honestly
-  blank until connected — never a fabricated stat.
-- **SEO basics:** `sitemap.xml`, `robots.txt`.
+- **SEO basics:** `sitemap.xml` (only the linked pages), `robots.txt`.
 - **Self-serve debugging:** `/diagnostics.html` checks Sheet 1's
   connection and explains problems in plain language.
+- **Performance:** homepage fetches run in parallel, not one after
+  another; unused font weights (bold/italic of the display face)
+  dropped sitewide; the homepage itself is now much shorter — fewer
+  sections, fewer Sheet calls, less to load before it's usable.
 
 ## What's intentionally not built
 
