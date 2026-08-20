@@ -73,7 +73,7 @@ function jtRenderFooter() {
             <span class="brand-mark" id="footerLogoMark" style="color:#FBF8F1">${JT_LOGO_SVG}</span>
             <strong style="font-family:var(--font-display); font-size:1.05rem;">JT Education Bureau</strong>
           </div>
-          <p>A tutor registry connecting students and verified tutors across Delhi&nbsp;NCR.</p>
+          <p>A tutor registry connecting students and verified tutors across India</p>
         </div>
         <div>
           <h5>Bureau</h5>
