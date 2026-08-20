@@ -4,12 +4,7 @@
    in one place, not copy-pasted across every HTML page.
    ========================================================= */
 
-const JT_LOGO_SVG = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="jtLogoTitleInline">
-  <title id="jtLogoTitleInline">JT Education Bureau</title>
-  <rect x="3" y="3" width="94" height="94" rx="16" fill="none" stroke="currentColor" stroke-width="2.5"/>
-  <rect x="11" y="11" width="78" height="78" rx="11" fill="none" stroke="#C1932F" stroke-width="1.4"/>
-  <text x="50" y="64" font-family="'Libre Caslon Text', Georgia, serif" font-size="36" text-anchor="middle" fill="currentColor" font-weight="600">JT</text>
-</svg>`;
+const JT_LOGO_IMG = `<img src="assets/logo-mark.png" alt="JT Education Bureau" style="width:100%; height:100%; object-fit:contain; border-radius:50%;">`;
 
 const JT_NAV_LINKS = [
   { href: "find-a-tutor.html", label: "Find a tutor" },
@@ -35,7 +30,7 @@ function jtRenderHeader(activePage) {
   <header class="site-header" id="siteHeader">
     <div class="container header-row">
       <a href="index.html" class="brand">
-        <span class="brand-mark" id="headerLogoMark" style="color:#16233F">${JT_LOGO_SVG}</span>
+        <span class="brand-mark" id="headerLogoMark">${JT_LOGO_IMG}</span>
         <span class="brand-name">JT Education Bureau<small id="headerTagline">Building&nbsp;Minds,&nbsp;Shaping&nbsp;Futures.</small></span>
       </a>
       <nav class="main-nav" aria-label="Primary">${navHtml}</nav>
@@ -70,7 +65,7 @@ function jtRenderFooter() {
       <div class="footer-grid">
         <div>
           <div class="footer-brand">
-            <span class="brand-mark" id="footerLogoMark" style="color:#FBF8F1">${JT_LOGO_SVG}</span>
+            <span class="brand-mark" id="footerLogoMark">${JT_LOGO_IMG}</span>
             <strong style="font-family:var(--font-display); font-size:1.05rem;">JT Education Bureau</strong>
           </div>
           <p>A tutor registry connecting students and verified tutors across India</p>
@@ -117,7 +112,7 @@ async function jtApplySettings() {
     document.querySelectorAll("#headerTagline").forEach(el => el.textContent = settings.Tagline);
   }
   if (settings.LogoURL) {
-    const imgHtml = `<img src="${jtNormalizeImageUrl(settings.LogoURL)}" alt="JT Education Bureau" style="width:100%; height:100%; object-fit:contain;">`;
+    const imgHtml = `<img src="${jtNormalizeImageUrl(settings.LogoURL)}" alt="JT Education Bureau" style="width:100%; height:100%; object-fit:contain; border-radius:50%;">`;
     document.querySelectorAll("#headerLogoMark, #footerLogoMark").forEach(el => el.innerHTML = imgHtml);
   }
   if (settings.Phone) {

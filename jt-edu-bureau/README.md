@@ -26,7 +26,10 @@ full map — it's short on purpose.
 - **Design system:** one file, `css/styles.css` — a "registry/bureau"
   look (ledger lines, admit-card styling) with a simple bordered "JT"
   badge mark.
-- **Logo:** `assets/logo-mark.svg`, vector, works on light or dark.
+- **Logo:** `assets/logo-mark.png` — a circular "JΠ" seal mark,
+  compressed to ~28KB. Also used as the favicon. Editable without
+  touching code via the Site Settings `LogoURL` cell (see below) if
+  you want to swap it again later.
 - **Editorial control (Site Settings tab):** hero headline, hero
   subtext, tagline, logo, phone, email, address — change a cell,
   it updates on the live site, everywhere that field appears.
