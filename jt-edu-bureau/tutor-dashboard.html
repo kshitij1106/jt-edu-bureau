@@ -33,7 +33,7 @@
       <div class="form-panel">
         <span class="form-no">TUTOR PROFILE</span>
         <h3 style="margin-top:6px;">Your listing</h3>
-        <p style="color:var(--ink-soft); font-size:0.85rem; margin-bottom:18px;">This appears on the public tutor directory once your account is verified. Changes save immediately.</p>
+        <p style="color:var(--ink-soft); font-size:0.85rem; margin-bottom:18px;">This appears on the public page once your account is verified. Changes save immediately.</p>
         <hr class="ledger-rule" style="margin-bottom:22px;">
 
         <div class="photo-upload">
@@ -158,7 +158,7 @@ function setAvatarImage(el, url, name) {
     document.getElementById("welcomeName").textContent = profile.Name || "there";
     const verified = String(profile.Verified || "No").toLowerCase() === "yes";
     document.getElementById("statusLine").innerHTML = verified
-      ? `<span class="pill pill-verified"><span class="dot"></span>Verified — visible on the public directory</span>`
+      ? `<span class="pill pill-verified"><span class="dot"></span>Verified — visible to the public</span>`
       : `<span class="pill pill-pending"><span class="dot"></span>Pending review — a coordinator will verify you soon</span>`;
 
     document.getElementById("pName").value = profile.Name || "";
